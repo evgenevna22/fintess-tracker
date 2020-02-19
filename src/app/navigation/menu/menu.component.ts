@@ -26,8 +26,8 @@ export class MenuComponent implements OnInit {
       iconName: 'lock_open'
     },
     {
-      url: '/training',
-      text: 'Training',
+      url: '/trainings',
+      text: 'Trainings',
       iconName: 'fitness_center'
     },
     {

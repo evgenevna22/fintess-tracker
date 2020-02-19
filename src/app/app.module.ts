@@ -16,15 +16,12 @@ import { LoginComponent } from './auth/login/login.component';
 import { WelcomeComponent } from './welcome/welcome.component';
 import { HeaderComponent } from './navigation/header/header.component';
 import { MenuComponent } from './navigation/menu/menu.component';
+import { TrainingModule } from './training/training.module';
 
 @NgModule({
   declarations: [
     AppComponent,
     SignupComponent,
-    TrainingComponent,
-    CurrentTrainingComponent,
-    NewTrainingComponent,
-    PastTrainingComponent,
     LoginComponent,
     WelcomeComponent,
     HeaderComponent,
@@ -36,7 +33,8 @@ import { MenuComponent } from './navigation/menu/menu.component';
     BrowserAnimationsModule,
     MaterialModule,
     FlexLayoutModule,
-    FormsModule
+    FormsModule,
+    TrainingModule
   ],
   providers: [],
   bootstrap: [AppComponent]
