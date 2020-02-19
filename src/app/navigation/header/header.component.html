@@ -1,0 +1,21 @@
+<mat-toolbar>
+  <button (click)="toggleMenu()" mat-icon-button fxHide.gt-xs>
+    <mat-icon>menu</mat-icon>
+  </button>
+  <button mat-icon-button color="warn" [routerLink]="['/']">
+    <mat-icon>home</mat-icon>
+  </button>
+  <section class="nav-wrapper" fxFlex fxLayout fxLayoutAlign="flex-end" fxHide.xs>
+    <ul class="nav" fxLayout fxLayoutGap="10px">
+      <li class="nav__item">
+        <a routerLink="/signup">SignUp</a>
+      </li>
+      <li class="nav__item">
+        <a routerLink="/login">LogIn</a>
+      </li>
+      <li class="nav__item">
+        <a routerLink="/training">Training</a>
+      </li>
+    </ul>
+  </section>
+</mat-toolbar>

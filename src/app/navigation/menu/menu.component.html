@@ -1,0 +1,8 @@
+<mat-nav-list>
+  <mat-list-item *ngFor="let link of navigationList">
+    <a class="nav-item" [routerLink]="link.url" (click)="closeSideNav()" fxLayout matLine>
+      <mat-icon>{{ link.iconName }}</mat-icon>
+      <span>{{ link.text }}</span>
+    </a>
+  </mat-list-item>
+</mat-nav-list>
