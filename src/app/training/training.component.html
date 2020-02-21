@@ -1,8 +1,9 @@
-<mat-tab-group>
-  <mat-tab label="New training">
-    <app-new-training></app-new-training>
-  </mat-tab>
-  <mat-tab label="Past trainings">
-    <app-past-training></app-past-training>
-  </mat-tab>
-</mat-tab-group>
+<nav mat-tab-nav-bar>
+  <a mat-tab-link
+    *ngFor="let link of trainingNav"
+    [routerLink]="link.path">
+    {{ link.label }}
+  </a>
+</nav>
+
+<router-outlet></router-outlet>
