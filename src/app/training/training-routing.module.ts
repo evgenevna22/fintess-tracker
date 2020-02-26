@@ -11,16 +11,16 @@ const routers: Routes = [
     component: TrainingComponent,
     children: [
       {
-        path: 'current',
-        component: CurrentTrainingComponent
-      },
-      {
         path: 'new',
         component: NewTrainingComponent
       },
       {
         path: 'past',
         component: PastTrainingComponent
+      },
+      {
+        path: 'current',
+        component: CurrentTrainingComponent
       },
     ]
   }

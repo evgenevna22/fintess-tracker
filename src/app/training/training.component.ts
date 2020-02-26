@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { INavigation } from '../shared/interfaces/navigation.interface';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-training',
@@ -10,10 +11,6 @@ export class TrainingComponent implements OnInit {
 
   public trainingNav: INavigation[] = [
     {
-      path: 'current',
-      label: 'Current training'
-    },
-    {
       path: 'new',
       label: 'New training'
     },
@@ -23,9 +20,13 @@ export class TrainingComponent implements OnInit {
     },
   ];
 
-  constructor() { }
+  constructor(private readonly route: ActivatedRoute) { }
 
   ngOnInit() {
+  }
+
+  public createNewTrainingHandler() {
+    /* this.route. */
   }
 
 }

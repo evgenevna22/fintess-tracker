@@ -11,6 +11,8 @@ import {
   MatToolbarModule,
   MatListModule,
   MatTabsModule,
+  MatCardModule,
+  MatSelectModule,
 } from '@angular/material';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 
@@ -25,7 +27,9 @@ const MODULES = [
   MatSidenavModule,
   MatToolbarModule,
   MatListModule,
-  MatTabsModule
+  MatTabsModule,
+  MatCardModule,
+  MatSelectModule
 ];
 
 @NgModule({
