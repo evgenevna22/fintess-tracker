@@ -1,0 +1,17 @@
+<div class="dialog-wrapper" fxLayout="column" fxLayoutAlign="center center">
+  <header mat-dialog-content>
+    <h3>{{ data.title }}</h3>
+    <p>{{ data.info }}</p>
+  </header>
+  <div mat-dialog-actions>
+    <button mat-button
+            [mat-dialog-close]="false">
+      Cancel
+    </button>
+    <button mat-button
+            cdkFocusInitial
+            [mat-dialog-close]="true">
+      Ok
+    </button>
+  </div>
+</div>

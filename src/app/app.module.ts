@@ -13,6 +13,11 @@ import { WelcomeComponent } from './welcome/welcome.component';
 import { HeaderComponent } from './navigation/header/header.component';
 import { MenuComponent } from './navigation/menu/menu.component';
 import { TrainingModule } from './training/training.module';
+import localeRu from '@angular/common/locales/ru';
+import { registerLocaleData } from '@angular/common';
+import { SharedModule } from './shared/shared.module';
+
+registerLocaleData(localeRu);
 
 @NgModule({
   declarations: [
@@ -31,9 +36,7 @@ import { TrainingModule } from './training/training.module';
     FormsModule,
     MaterialModule,
     TrainingModule,
-  ],
-  exports: [
-    MaterialModule
+    SharedModule
   ],
   providers: [],
   bootstrap: [AppComponent]

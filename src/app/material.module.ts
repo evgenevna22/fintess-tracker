@@ -13,6 +13,8 @@ import {
   MatTabsModule,
   MatCardModule,
   MatSelectModule,
+  MatProgressSpinnerModule,
+  MatDialogModule,
 } from '@angular/material';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 
@@ -29,7 +31,9 @@ const MODULES = [
   MatListModule,
   MatTabsModule,
   MatCardModule,
-  MatSelectModule
+  MatSelectModule,
+  MatProgressSpinnerModule,
+  MatDialogModule
 ];
 
 @NgModule({
