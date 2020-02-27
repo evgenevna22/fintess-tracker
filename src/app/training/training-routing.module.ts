@@ -1,9 +1,9 @@
 import { Routes, RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { TrainingComponent } from './training.component';
-import { CurrentTrainingComponent } from './current-training/current-training.component';
-import { NewTrainingComponent } from './new-training/new-training.component';
-import { PastTrainingComponent } from './past-training/past-training.component';
+import { CurrentTrainingComponent } from './components/current-training/current-training.component';
+import { NewTrainingComponent } from './components/new-training/new-training.component';
+import { PastTrainingComponent } from './components/past-training/past-training.component';
 
 const routers: Routes = [
   {

@@ -28,18 +28,26 @@
     "interface-name": false,
     "max-classes-per-file": false,
     "max-line-length": [
-      true,
-      140
+      false,
+      {
+        "limit": 140, 
+        "ignore-pattern": "^import [^,]+ from |^export | implements"
+      }
     ],
     "member-access": false,
     "member-ordering": [
       true,
       {
         "order": [
-          "static-field",
-          "instance-field",
-          "static-method",
-          "instance-method"
+          "public-static-field",
+          "public-instance-field",
+          "private-static-field",
+          "private-instance-field",
+          "public-constructor",
+          "private-constructor",
+          "public-instance-method",
+          "protected-instance-method",
+          "private-instance-method"
         ]
       }
     ],
@@ -52,7 +60,6 @@
       "timeEnd",
       "trace"
     ],
-    "no-empty": false,
     "no-inferrable-types": [
       true,
       "ignore-params"
@@ -60,6 +67,7 @@
     "no-non-null-assertion": true,
     "no-redundant-jsdoc": true,
     "no-switch-case-fall-through": true,
+    "no-use-before-declare": true,
     "no-var-requires": false,
     "object-literal-key-quotes": [
       true,
@@ -74,18 +82,50 @@
     "trailing-comma": false,
     "no-conflicting-lifecycle": true,
     "no-host-metadata-property": true,
-    "no-input-rename": true,
+    "no-input-rename": false,
     "no-inputs-metadata-property": true,
     "no-output-native": true,
     "no-output-on-prefix": true,
     "no-output-rename": true,
     "no-outputs-metadata-property": true,
+    "variable-name": [false, "ban-keywords", "check-format", "allow-leading-underscore"],
     "template-banana-in-box": true,
     "template-no-negated-async": true,
     "use-lifecycle-interface": true,
-    "use-pipe-transform-interface": true
+    "use-pipe-transform-interface": true,
+    "no-magic-numbers": [true, -1, 0, 1],
+    "promise-function-async": true,
+    "typedef": [true, "parameter"],
+    "curly": true,
+    "no-debugger": true,
+    "no-empty": true,
+    "no-shadowed-variable": true,
+    "no-string-literal": true,
+    "no-unused-variable": true,
+    "no-var-keyword": true,
+    "no-void-expression": true,
+    "prefer-conditional-expression": true,
+    "restrict-plus-operands": true,
+    "typeof-compare": true,
+    "unnecessary-constructor": [true, {"check-super-calls": true}],
+    "use-default-type-parameter": true,
+    "prefer-readonly": true,
+    "arrow-return-shorthand": true,
+    "align": [true, "parameters", "statements", "members", "elements"]
   },
   "rulesDirectory": [
     "codelyzer"
-  ]
+  ],
+  "whitespace": [
+    true,
+    "check-branch",
+    "check-decl",
+    "check-operator",
+    "check-separator",
+    "check-type",
+    "check-typecast"
+  ],
+  "import-destructuring-spacing": true,
+  "import-spacing": true,
+  "indent": [true, "tabs", 2]
 }
