@@ -3,7 +3,7 @@
     <app-menu (closeSideNavEvent)="sidenav.close()"></app-menu>
   </mat-sidenav>
   <mat-sidenav-content>
-    <app-header (toggleMenu)="sidenav.toggle()"></app-header>
+    <app-header (toggleMenuEvent)="sidenav.toggle()"></app-header>
     <main>
       <router-outlet></router-outlet>
     </main>

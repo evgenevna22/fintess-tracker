@@ -6,12 +6,11 @@ import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MaterialModule } from './material.module';
-import { SignupComponent } from './auth/signup/signup.component';
-import { LoginComponent } from './auth/login/login.component';
+import { SignupComponent } from './auth/components/signup/signup.component';
+import { LoginComponent } from './auth/components/login/login.component';
 import { WelcomeComponent } from './welcome/welcome.component';
-import { HeaderComponent } from './navigation/header/header.component';
-import { MenuComponent } from './navigation/menu/menu.component';
+import { HeaderComponent } from './navigation/components/header/header.component';
+import { MenuComponent } from './navigation/components/menu/menu.component';
 import { TrainingModule } from './training/training.module';
 import localeRu from '@angular/common/locales/ru';
 import { registerLocaleData } from '@angular/common';
@@ -34,7 +33,6 @@ registerLocaleData(localeRu);
     BrowserAnimationsModule,
     FlexLayoutModule,
     FormsModule,
-    MaterialModule,
     TrainingModule,
     SharedModule
   ],

@@ -1,0 +1,29 @@
+<mat-toolbar>
+  <button (click)="toggleMenu()"
+          mat-icon-button
+          fxHide.gt-xs>
+    <mat-icon>menu</mat-icon>
+  </button>
+  <button mat-icon-button
+          color="warn"
+          routerLink="/">
+    <mat-icon>home</mat-icon>
+  </button>
+  <section class="nav-wrapper"
+           fxFlex
+           fxLayout
+           fxLayoutAlign="flex-end"
+           fxHide.xs>
+    <ul class="nav"
+        fxLayout
+        fxLayoutGap="10px">
+      <li class="nav__item"
+          *ngFor="let item of navigationList">
+        <a *ngIf="item.isAuth"
+           [routerLink]="item.path">
+          {{ item.label }}
+        </a>
+      </li>
+    </ul>
+  </section>
+</mat-toolbar>

@@ -1,6 +1,6 @@
-import { Component, OnInit, Output, EventEmitter } from "@angular/core";
-import { TrainingTypeEnum } from "../enums/training-type.enum";
+import { Component, OnInit, Output, EventEmitter, Input } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import { TrainingTypeEnum } from "../../enums/training-type.enum";
 
 @Component({
   selector: "app-new-training",
@@ -31,7 +31,9 @@ export class NewTrainingComponent implements OnInit {
     }
   ];
 
-  constructor(private readonly route: ActivatedRoute, private readonly router: Router) {}
+  constructor(
+    private readonly router: Router
+  ) {}
 
   ngOnInit() {}
 
@@ -39,6 +41,6 @@ export class NewTrainingComponent implements OnInit {
    * Creating the new training
    */
   public createNewTraining(): void {
-    this.router.navigate(['/current']);
+    this.router.navigate(["/current"]);
   }
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { INavigation } from '../shared/interfaces/navigation.interface';
+import { IInternalNavigation } from '../shared/interfaces/internal-navigation.interface';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -9,7 +9,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class TrainingComponent implements OnInit {
 
-  public trainingNav: INavigation[] = [
+  public trainingNav: IInternalNavigation[] = [
     {
       path: 'new',
       label: 'New training'

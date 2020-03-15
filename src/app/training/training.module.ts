@@ -5,8 +5,9 @@ import { TrainingComponent } from './training.component';
 import { CurrentTrainingComponent } from './components/current-training/current-training.component';
 import { NewTrainingComponent } from './components/new-training/new-training.component';
 import { PastTrainingComponent } from './components/past-training/past-training.component';
-import { MaterialModule } from '../material.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { FormsModule } from '@angular/forms';
+import { SharedModule } from '../shared/shared.module';
 
 const COMPONENTS = [
   TrainingComponent,
@@ -18,8 +19,9 @@ const COMPONENTS = [
 const MODULES = [
   CommonModule,
   TrainingRoutingModule,
-  MaterialModule,
-  FlexLayoutModule
+  FlexLayoutModule,
+  FormsModule,
+  SharedModule
 ];
 
 @NgModule({
