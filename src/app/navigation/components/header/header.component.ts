@@ -16,16 +16,18 @@ import { takeUntil } from "rxjs/operators";
 export class HeaderComponent implements OnInit {
   @Output() toggleMenuEvent: EventEmitter<void> = new EventEmitter<void>();
 
-  public navigationList: IAppNavigation[];
+  public navigationList: IAppNavigation[] = NOT_AUTH_NAVIGATION_LIST;
+  public isAuthUser: boolean = false;
 
-  private unsuscribe: Subject<void>;
+  private unsubscribe: Subject<void> = new Subject<void>();
 
-  constructor(private readonly authService: AuthService) {}
+  constructor(public authService: AuthService) {}
 
   ngOnInit() {
     this.authService.isAuthUser$
-      .pipe(takeUntil(this.unsuscribe))
+      .pipe(takeUntil(this.unsubscribe))
       .subscribe((value: boolean) => {
+        this.isAuthUser = value;
         this.navigationList = value
           ? AUTH_NAVIGATION_LIST
           : NOT_AUTH_NAVIGATION_LIST;
@@ -33,8 +35,8 @@ export class HeaderComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this.unsuscribe.next();
-    this.unsuscribe.complete();
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
   }
 
   /**
@@ -42,5 +44,12 @@ export class HeaderComponent implements OnInit {
    */
   public toggleMenu(): void {
     this.toggleMenuEvent.emit();
+  }
+  
+  /**
+   * Logout
+   */
+  public logout(): void {
+    this.authService.logout();
   }
 }

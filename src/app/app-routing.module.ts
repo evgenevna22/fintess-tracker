@@ -4,6 +4,7 @@ import { WelcomeComponent } from './welcome/welcome.component';
 import { SignupComponent } from './auth/components/signup/signup.component';
 import { TrainingComponent } from './training/training.component';
 import { LoginComponent } from './auth/components/login/login.component';
+import { AuthGuard } from './auth/guards/auth.guard';
 
 const routes: Routes = [
   {
@@ -20,12 +21,14 @@ const routes: Routes = [
   },
   {
     path: 'trainings',
-    loadChildren: () => import('./training/training.module').then(m => m.TrainingModule)
+    loadChildren: () => import('./training/training.module').then(m => m.TrainingModule),
+    canActivate: [AuthGuard]
   }
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
+  providers: [AuthGuard]
 })
 export class AppRoutingModule {}

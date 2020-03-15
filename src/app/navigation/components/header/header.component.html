@@ -19,11 +19,16 @@
         fxLayoutGap="10px">
       <li class="nav__item"
           *ngFor="let item of navigationList">
-        <a *ngIf="item.isAuth"
-           [routerLink]="item.path">
+        <a [routerLink]="item.path">
           {{ item.label }}
         </a>
       </li>
     </ul>
+    <a *ngIf="isAuthUser"
+       routerLink="/logout"
+       class="nav__item"
+       (click)="logout()">
+      Logout
+    </a>
   </section>
 </mat-toolbar>

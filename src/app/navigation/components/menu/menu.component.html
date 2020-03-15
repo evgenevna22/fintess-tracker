@@ -1,8 +1,22 @@
 <mat-nav-list>
   <mat-list-item *ngFor="let link of navigationList">
-    <a class="nav-item" [routerLink]="link.url" (click)="closeSideNav()" fxLayout matLine>
+    <a class="nav-item"
+       [routerLink]="link.path"
+       (click)="closeSideNav()"
+       fxLayout
+       matLine>
       <mat-icon>{{ link.iconName }}</mat-icon>
-      <span>{{ link.text }}</span>
+      <span>{{ link.label }}</span>
+    </a>
+  </mat-list-item>
+  <mat-list-item>
+    <a matLine
+       *ngIf="isAuthUser"
+       class="nav-item"
+       routerLink="/logout"
+       (click)="closeSideNav()">
+      <mat-icon>replay</mat-icon>
+      <span>Logout</span>
     </a>
   </mat-list-item>
 </mat-nav-list>
