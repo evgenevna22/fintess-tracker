@@ -10,7 +10,7 @@ export const AUTH_NAVIGATION_LIST: IAppNavigation[] = [
 
 export const NOT_AUTH_NAVIGATION_LIST: IAppNavigation[] = [
   {
-    path: '/trainings',
+    path: '/signup',
     label: 'Signin',
     iconName: 'exit_to_app',
   },

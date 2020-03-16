@@ -9,10 +9,11 @@
     <mat-card-content fxLayout="column"
                       fxLayoutAlign="center">
       <mat-form-field>
-        <mat-select placeholder="Select your training">
+        <mat-select [formControl]="selectedTraining"
+                    placeholder="Select your training">
           <mat-option *ngFor="let training of trainings"
-                      [value]="training.value">
-            {{ training.label }}
+                      [value]="training.type">
+            {{ training.name }}
           </mat-option>
         </mat-select>
       </mat-form-field>
