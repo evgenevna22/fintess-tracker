@@ -27,6 +27,7 @@ export class HeaderComponent implements OnInit {
     this.authService.isAuthUser$
       .pipe(takeUntil(this.unsubscribe))
       .subscribe((value: boolean) => {
+        console.log('hi');
         this.isAuthUser = value;
         this.navigationList = value
           ? AUTH_NAVIGATION_LIST

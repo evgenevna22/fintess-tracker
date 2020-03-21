@@ -2,9 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { WelcomeComponent } from './welcome/welcome.component';
 import { SignupComponent } from './auth/components/signup/signup.component';
-import { TrainingComponent } from './training/training.component';
 import { LoginComponent } from './auth/components/login/login.component';
-import { AuthGuard } from './auth/guards/auth.guard';
 
 const routes: Routes = [
   {
@@ -21,14 +19,12 @@ const routes: Routes = [
   },
   {
     path: 'trainings',
-    loadChildren: () => import('./training/training.module').then(m => m.TrainingModule),
-    canActivate: [AuthGuard]
+    loadChildren: () => import('./training/training.module').then(m => m.TrainingModule)
   }
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule],
-  providers: [AuthGuard]
+  exports: [RouterModule]
 })
 export class AppRoutingModule {}

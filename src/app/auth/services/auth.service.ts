@@ -9,10 +9,15 @@ import { Router } from '@angular/router';
 
 export class AuthService {
 
-  constructor(private readonly router: Router) {}
-
   public user$: BehaviorSubject<IUserData> = new BehaviorSubject<IUserData>(null);
   public isAuthUser$: Subject<boolean> = new Subject<boolean>();
+
+  constructor(private readonly router: Router) {
+    if (localStorage.getItem('userData')) {
+      this.user$.next(JSON.parse(localStorage.getItem('userData')));
+      this.isAuthUser$.next(true);
+    }
+  }
   
   /**
    * Register user
@@ -36,6 +41,8 @@ export class AuthService {
       userId: Math.round(Math.random() * 1000).toString()
     });
     this.isAuthUser$.next(true);
+    localStorage.setItem('userData', JSON.stringify(this.user$.value));
+    this.router.navigate(['/trainings']);
   }
 
   /**
@@ -44,6 +51,7 @@ export class AuthService {
   public logout(): void {
     this.user$.next(null);
     this.isAuthUser$.next(false);
+    localStorage.removeItem('userData');
     this.router.navigate(['/login']);
   }
 
