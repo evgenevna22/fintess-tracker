@@ -11,7 +11,6 @@ import { LoginComponent } from './auth/components/login/login.component';
 import { WelcomeComponent } from './welcome/welcome.component';
 import { HeaderComponent } from './navigation/components/header/header.component';
 import { MenuComponent } from './navigation/components/menu/menu.component';
-import { TrainingModule } from './training/training.module';
 import localeRu from '@angular/common/locales/ru';
 import { registerLocaleData } from '@angular/common';
 import { SharedModule } from './shared/shared.module';
@@ -33,7 +32,6 @@ registerLocaleData(localeRu);
     BrowserAnimationsModule,
     FlexLayoutModule,
     FormsModule,
-    TrainingModule,
     SharedModule
   ],
   providers: [],

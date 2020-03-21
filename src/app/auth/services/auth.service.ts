@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 export class AuthService {
 
   public user$: BehaviorSubject<IUserData> = new BehaviorSubject<IUserData>(null);
-  public isAuthUser$: Subject<boolean> = new Subject<boolean>();
+  public isAuthUser$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   constructor(private readonly router: Router) {
     if (localStorage.getItem('userData')) {
