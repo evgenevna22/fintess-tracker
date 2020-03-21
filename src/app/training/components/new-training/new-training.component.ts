@@ -1,6 +1,5 @@
-import { Component, OnInit, Output, EventEmitter, Input, OnDestroy } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
-import { TrainingTypeEnum } from "../../enums/training-type.enum";
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TrainingService } from '../../services/trainings.service';
 import { ITraining } from '../../interfaces/training.interface';
 import { FormControl, Validators } from '@angular/forms';
@@ -8,15 +7,11 @@ import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
 @Component({
-  selector: "app-new-training",
-  templateUrl: "./new-training.component.html",
-  styleUrls: ["./new-training.component.scss"]
+  selector: 'app-new-training',
+  templateUrl: './new-training.component.html',
+  styleUrls: ['./new-training.component.scss']
 })
 export class NewTrainingComponent implements OnInit, OnDestroy {
-  @Output() createNewTrainingEvent: EventEmitter<void> = new EventEmitter<
-    void
-  >();
-
   public trainings: ITraining[] = [];
   public selectedTraining: FormControl = new FormControl(null, Validators.required);
 
@@ -32,8 +27,10 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 
     this.selectedTraining.valueChanges
       .pipe(takeUntil(this.unsubscribe))
-      .subscribe((training: ITraining) => {
-        this.trainingService.selectedExercise$.next(training);
+      .subscribe((id: number) => {
+        this.trainingService.selectedExercise$.next(
+          this.trainings.find(training => training.id === id)
+        );
       })
   }
 
@@ -46,6 +43,6 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
    * Creating the new training
    */
   public createNewTraining(): void {
-    this.router.navigate(["/current"]);
+    this.router.navigate(['current']);
   }
 }

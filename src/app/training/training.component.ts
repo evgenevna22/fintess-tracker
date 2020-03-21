@@ -37,6 +37,10 @@ export class TrainingComponent implements OnInit {
       })
   }
 
+  ngOnDestroy() {
+    this.trainingSubscription.unsubscribe();
+  }
+
   public createNewTrainingHandler() {
     /* this.route. */
   }

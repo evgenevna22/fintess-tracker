@@ -3,7 +3,9 @@ import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { SimpleDialogComponent } from "src/app/shared/components/simple-dialog/simple-dialog.component";
 import { Router } from "@angular/router";
 import { Subject } from "rxjs";
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil } from "rxjs/operators";
+import { TrainingService } from "../../services/trainings.service";
+import { ITraining } from "../../interfaces/training.interface";
 
 const finishedSpinnerValue = 100;
 
@@ -14,16 +16,25 @@ const finishedSpinnerValue = 100;
 })
 export class CurrentTrainingComponent implements OnInit {
   public trainingProgress = 0;
+  public training: ITraining;
   private timer: number;
   private unsubscribe: Subject<void> = new Subject<void>();
 
   constructor(
     private readonly dialog: MatDialog,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly trainingService: TrainingService
   ) {}
 
   ngOnInit() {
-    this.startOrResumeTimer();
+    this.trainingService.selectedExercise$
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe((training: ITraining) => {
+        if (training) {
+          this.training = training;
+          this.startOrResumeTimer();
+        }
+      });
   }
 
   ngOnDestroy() {
@@ -50,7 +61,12 @@ export class CurrentTrainingComponent implements OnInit {
       .afterClosed()
       .pipe(takeUntil(this.unsubscribe))
       .subscribe((result: boolean) => {
-        result ? this.router.navigate(["/new"]) : this.startOrResumeTimer();
+        if (result) {
+          this.trainingService.cancelTraining();
+          this.router.navigate(["trainings/new"]);
+        } else {
+          this.startOrResumeTimer();
+        }
       });
   }
 
@@ -61,7 +77,15 @@ export class CurrentTrainingComponent implements OnInit {
     this.timer = <any>setInterval(() => {
       this.trainingProgress < finishedSpinnerValue
         ? (this.trainingProgress += 10)
-        : clearInterval(this.timer);
+        : this.compeleteTraining()
     }, 1000);
+  }
+
+  /**
+   * Method to complete the training
+   */
+  private compeleteTraining(): void {
+    clearInterval(this.timer);
+    this.trainingService.completeTraining();
   }
 }

@@ -1,6 +1,10 @@
 <section class="current-training"
          fxLayout="column"
-         fxLayoutAlign="center center">
+         fxLayoutAlign="center center"
+         *ngIf="training">
+
+  <h3 class="training-name">Your training is {{ training.name }}</h3>
+
   <mat-progress-spinner color="primary"
                         mode="determinate"
                         [value]="trainingProgress">

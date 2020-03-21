@@ -12,7 +12,7 @@
         <mat-select [formControl]="selectedTraining"
                     placeholder="Select your training">
           <mat-option *ngFor="let training of trainings"
-                      [value]="training.type">
+                      [value]="training.id">
             {{ training.name }}
           </mat-option>
         </mat-select>
