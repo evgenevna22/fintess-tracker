@@ -14,6 +14,9 @@ import { MenuComponent } from './navigation/components/menu/menu.component';
 import localeRu from '@angular/common/locales/ru';
 import { registerLocaleData } from '@angular/common';
 import { SharedModule } from './shared/shared.module';
+import { AngularFireModule } from '@angular/fire';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { environment } from 'src/environments/environment';
 
 registerLocaleData(localeRu);
 
@@ -32,7 +35,9 @@ registerLocaleData(localeRu);
     BrowserAnimationsModule,
     FlexLayoutModule,
     FormsModule,
-    SharedModule
+    SharedModule,
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFirestoreModule
   ],
   providers: [],
   bootstrap: [AppComponent]

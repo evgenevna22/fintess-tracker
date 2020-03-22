@@ -11,8 +11,8 @@
       <mat-form-field>
         <mat-select [formControl]="selectedTraining"
                     placeholder="Select your training">
-          <mat-option *ngFor="let training of trainings"
-                      [value]="training.id">
+          <mat-option *ngFor="let training of trainings | async; index as index"
+                      [value]="index">
             {{ training.name }}
           </mat-option>
         </mat-select>

@@ -4,7 +4,9 @@ import { TrainingsService } from '../../services/trainings.service';
 import { ITraining } from '../../interfaces/training.interface';
 import { FormControl, Validators } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
+import { AngularFirestore } from '@angular/fire/firestore';
+import 'firebase/firestore';
 
 @Component({
   selector: 'app-new-training',
@@ -12,7 +14,7 @@ import { Subject } from 'rxjs';
   styleUrls: ['./new-training.component.scss']
 })
 export class NewTrainingComponent implements OnInit, OnDestroy {
-  public trainings: ITraining[] = [];
+  public trainings: Observable<ITraining[] | any>;
   public selectedTraining: FormControl = new FormControl(null, Validators.required);
 
   private unsubscribe: Subject<void> = new Subject<void>();
@@ -20,18 +22,19 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
   constructor(
     private readonly router: Router,
     private readonly activatedRoute: ActivatedRoute,
-    private readonly TrainingsService: TrainingsService
+    private readonly trainingsService: TrainingsService,
+    private readonly db: AngularFirestore
   ) {}
 
   ngOnInit() {
-    this.trainings = this.TrainingsService.getAvailableExercises();
+     this.trainings = this.db.collection('avaliableExercises').valueChanges();
 
     this.selectedTraining.valueChanges
       .pipe(takeUntil(this.unsubscribe))
       .subscribe((id: number) => {
-        this.TrainingsService.selectedExercise$.next(
+        /* this.trainingsService.selectedExercise$.next(
           this.trainings.find(training => training.id === id)
-        );
+        ); */
       })
   }
 
@@ -44,7 +47,6 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
    * Creating the new training
    */
   public createNewTraining(): void {
-    console.log(this.activatedRoute, this.router);
     this.router.navigate(['../current'], {relativeTo: this.activatedRoute});
   }
 }

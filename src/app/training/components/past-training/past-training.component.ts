@@ -39,7 +39,6 @@ export class PastTrainingComponent implements OnInit, AfterViewInit {
       )
       .subscribe((trainings: ITraining[]) => {
         this.pastTrainings.data = [...trainings];
-        console.log(this.pastTrainings);
       });
   }
 
