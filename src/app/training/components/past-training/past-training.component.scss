@@ -1,0 +1,23 @@
+::host {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.mat-table,
+.mat-paginator {
+  width: 70%;
+  margin: 2rem auto;
+}
+
+.mat-form-field {
+  margin: 0 auto;
+}

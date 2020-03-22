@@ -1,18 +1,18 @@
-import { Component, OnInit } from "@angular/core";
-import { MatDialog, MatDialogRef } from "@angular/material/dialog";
-import { SimpleDialogComponent } from "src/app/shared/components/simple-dialog/simple-dialog.component";
-import { Router } from "@angular/router";
-import { Subject } from "rxjs";
-import { takeUntil } from "rxjs/operators";
-import { TrainingService } from "../../services/trainings.service";
-import { ITraining } from "../../interfaces/training.interface";
+import { Component, OnInit } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { SimpleDialogComponent } from 'src/app/shared/components/simple-dialog/simple-dialog.component';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { TrainingsService } from '../../services/trainings.service';
+import { ITraining } from '../../interfaces/training.interface';
 
 const finishedSpinnerValue = 100;
 
 @Component({
-  selector: "app-current-training",
-  templateUrl: "./current-training.component.html",
-  styleUrls: ["./current-training.component.scss"]
+  selector: 'app-current-training',
+  templateUrl: './current-training.component.html',
+  styleUrls: ['./current-training.component.scss']
 })
 export class CurrentTrainingComponent implements OnInit {
   public trainingProgress = 0;
@@ -23,11 +23,12 @@ export class CurrentTrainingComponent implements OnInit {
   constructor(
     private readonly dialog: MatDialog,
     private readonly router: Router,
-    private readonly trainingService: TrainingService
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly TrainingsService: TrainingsService
   ) {}
 
   ngOnInit() {
-    this.trainingService.selectedExercise$
+    this.TrainingsService.selectedExercise$
       .pipe(takeUntil(this.unsubscribe))
       .subscribe((training: ITraining) => {
         if (training) {
@@ -52,7 +53,7 @@ export class CurrentTrainingComponent implements OnInit {
       any
     > = this.dialog.open(SimpleDialogComponent, {
       data: {
-        title: "Are you sure you want to finish your training?",
+        title: 'Are you sure you want to finish your training?',
         info: `Your progress is ${this.trainingProgress} %`
       }
     });
@@ -62,8 +63,8 @@ export class CurrentTrainingComponent implements OnInit {
       .pipe(takeUntil(this.unsubscribe))
       .subscribe((result: boolean) => {
         if (result) {
-          this.trainingService.cancelTraining();
-          this.router.navigate(["trainings/new"]);
+          this.TrainingsService.cancelTraining();
+          this.router.navigate(['../new'], {relativeTo: this.activatedRoute});
         } else {
           this.startOrResumeTimer();
         }
@@ -86,6 +87,7 @@ export class CurrentTrainingComponent implements OnInit {
    */
   private compeleteTraining(): void {
     clearInterval(this.timer);
-    this.trainingService.completeTraining();
+    this.TrainingsService.completeTraining();
+    this.router.navigate(['../new'], {relativeTo: this.activatedRoute});
   }
 }

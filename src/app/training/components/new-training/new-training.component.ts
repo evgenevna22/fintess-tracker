@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TrainingService } from '../../services/trainings.service';
+import { TrainingsService } from '../../services/trainings.service';
 import { ITraining } from '../../interfaces/training.interface';
 import { FormControl, Validators } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
@@ -19,16 +19,17 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly router: Router,
-    private readonly trainingService: TrainingService
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly TrainingsService: TrainingsService
   ) {}
 
   ngOnInit() {
-    this.trainings = this.trainingService.getAvailableTrainings();
+    this.trainings = this.TrainingsService.getAvailableExercises();
 
     this.selectedTraining.valueChanges
       .pipe(takeUntil(this.unsubscribe))
       .subscribe((id: number) => {
-        this.trainingService.selectedExercise$.next(
+        this.TrainingsService.selectedExercise$.next(
           this.trainings.find(training => training.id === id)
         );
       })
@@ -43,6 +44,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
    * Creating the new training
    */
   public createNewTraining(): void {
-    this.router.navigate(['current']);
+    console.log(this.activatedRoute, this.router);
+    this.router.navigate(['../current'], {relativeTo: this.activatedRoute});
   }
 }

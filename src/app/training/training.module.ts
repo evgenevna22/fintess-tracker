@@ -8,7 +8,7 @@ import { PastTrainingComponent } from './components/past-training/past-training.
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
-import { TrainingService } from './services/trainings.service';
+import { TrainingsService } from './services/trainings.service';
 
 const COMPONENTS = [
   TrainingComponent,
@@ -37,7 +37,7 @@ const MODULES = [
     ...COMPONENTS
   ],
   providers: [
-    TrainingService
+    TrainingsService
   ]
 })
 export class TrainingModule { }

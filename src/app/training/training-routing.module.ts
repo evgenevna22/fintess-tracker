@@ -10,18 +10,20 @@ const routers: Routes = [
   {
     path: '',
     component: TrainingComponent,
-    canActivate: [AuthGuard],
     children: [
       {
         path: 'new',
+        pathMatch: 'full',
         component: NewTrainingComponent
       },
       {
         path: 'past',
+        pathMatch: 'full',
         component: PastTrainingComponent
       },
       {
         path: 'current',
+        pathMatch: 'full',
         component: CurrentTrainingComponent
       },
     ]
@@ -30,6 +32,5 @@ const routers: Routes = [
 @NgModule({
   imports: [RouterModule.forChild(routers)],
   exports: [RouterModule],
-  providers: [AuthGuard]
 })
 export class TrainingRoutingModule { }

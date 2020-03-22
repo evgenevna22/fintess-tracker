@@ -1,1 +1,77 @@
-<p>past-training works!</p>
+<div class="page-wrapper">
+  <mat-form-field>
+    <mat-label>Filter</mat-label>
+    <input matInput
+           placeholder="Enter a search key"
+           (keyup)="filterTrainings($event)">
+  </mat-form-field>
+  
+  <table mat-table
+         matSort
+         [dataSource]="pastTrainings"
+         class="mat-elevation-z8">
+  
+    <ng-container matColumnDef="id">
+      <th mat-header-cell
+          mat-sort-header
+          *matHeaderCellDef>Id</th>
+      <td mat-cell
+          *matCellDef="let element"> {{ element.id }} </td>
+    </ng-container>
+  
+    <ng-container matColumnDef="type">
+      <th mat-header-cell
+          mat-sort-header
+          *matHeaderCellDef>Type</th>
+      <td mat-cell
+          *matCellDef="let element"> {{ trainingType[element.type] }} </td>
+    </ng-container>
+  
+    <ng-container matColumnDef="name">
+      <th mat-header-cell
+          mat-sort-header
+          *matHeaderCellDef>Name</th>
+      <td mat-cell
+          *matCellDef="let element"> {{ element.name }} </td>
+    </ng-container>
+  
+    <ng-container matColumnDef="duration">
+      <th mat-header-cell
+          mat-sort-header
+          *matHeaderCellDef>Duration</th>
+      <td mat-cell
+          *matCellDef="let element"> {{ element.duration }} </td>
+    </ng-container>
+  
+    <ng-container matColumnDef="calories">
+      <th mat-header-cell
+          mat-sort-header
+          *matHeaderCellDef>Calories</th>
+      <td mat-cell
+          *matCellDef="let element"> {{ element.calories }} </td>
+    </ng-container>
+  
+    <ng-container matColumnDef="date">
+      <th mat-header-cell
+          mat-sort-header
+          *matHeaderCellDef>Date</th>
+      <td mat-cell
+          *matCellDef="let element"> {{ element.date }} </td>
+    </ng-container>
+  
+    <ng-container matColumnDef="state">
+      <th mat-header-cell
+          mat-sort-header
+          *matHeaderCellDef>State</th>
+      <td mat-cell
+          *matCellDef="let element"> {{ trainingState[element.state] }} </td>
+    </ng-container>
+  
+    <tr mat-header-row
+        *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row
+        *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+  <mat-paginator [pageSizeOptions]="[2, 8, 22]"
+                 showFirstLastButtons></mat-paginator>
+</div>

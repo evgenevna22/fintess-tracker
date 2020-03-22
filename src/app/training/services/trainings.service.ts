@@ -2,10 +2,19 @@ import { ITraining } from "../interfaces/training.interface";
 import { BehaviorSubject } from 'rxjs';
 import { TrainingStateEnum } from '../enums/training-state.enum';
 
-export class TrainingService {
+export class TrainingsService {
+
+  constructor() {
+    if (localStorage.getItem('trainings')) {
+      this.trainings = JSON.parse(localStorage.getItem('trainings'));
+      this.trainingsBS$.next(Object.assign([], this.trainings));
+    }
+  }
   
   public selectedExercise$: BehaviorSubject<ITraining> = new BehaviorSubject<ITraining>(null);
-  private availableTrainings: ITraining[] = [
+  public trainingsBS$: BehaviorSubject<ITraining[]> = new BehaviorSubject(null);
+  private trainings: ITraining[] = [];
+  private availableExercised: ITraining[] = [
     { 
       id: 0,
       type: 0,
@@ -39,21 +48,41 @@ export class TrainingService {
       date: '2019-09-01T13:28:18Z'
     }
   ];
-  private trainings: ITraining[] = [];
 
-  public getAvailableTrainings(): ITraining[] {
-    return Object.assign(this.availableTrainings);
+  /**
+   * Get avaliable training for filter
+   * @return trainings
+   */
+  public getAvailableExercises(): ITraining[] {
+    return Object.assign(this.availableExercised);
   }
 
+  /**
+   * Cancel current training
+   */
   public cancelTraining(): void {
     const cancelledTraining = {...this.selectedExercise$.value};
     cancelledTraining.state = TrainingStateEnum.Cancelled;
-    this.trainings.push(cancelledTraining);
+    this.updateTrainings(cancelledTraining);
+    localStorage.setItem('trainings', JSON.stringify(this.trainings));
   }
 
+  /**
+   * Complete current training
+   */
   public completeTraining(): void {
-    const cancelledTraining = {...this.selectedExercise$.value};
-    cancelledTraining.state = TrainingStateEnum.Completed;
-    this.trainings.push(cancelledTraining);
+    const completedTraining = {...this.selectedExercise$.value};
+    completedTraining.state = TrainingStateEnum.Completed;
+    this.updateTrainings(completedTraining);
+    localStorage.setItem('trainings', JSON.stringify(this.trainings));
+  }
+
+  /**
+   * Update trainings models
+   * @param training – training
+   */
+  private updateTrainings(training: ITraining): void {
+    this.trainings.push(training);
+    this.trainingsBS$.next(Object.assign([], this.trainings));
   }
 }
