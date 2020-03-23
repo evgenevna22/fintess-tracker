@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TrainingsService } from '../../services/trainings.service';
 import { ITraining } from '../../interfaces/training.interface';
 import { FormControl, Validators } from '@angular/forms';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, map } from 'rxjs/operators';
 import { Subject, Observable } from 'rxjs';
 import { AngularFirestore } from '@angular/fire/firestore';
 import 'firebase/firestore';
@@ -27,7 +27,18 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-     this.trainings = this.db.collection('avaliableExercises').valueChanges();
+    this.trainings = this.db.collection('avaliableExercises')
+      .snapshotChanges()
+      .pipe(
+        map(data => {
+          return data.map((item: any) => {
+            return {
+              id: item.payload.doc.id,
+              ...item.payload.doc.data()
+            }
+          })
+        })
+      );
 
     this.selectedTraining.valueChanges
       .pipe(takeUntil(this.unsubscribe))
