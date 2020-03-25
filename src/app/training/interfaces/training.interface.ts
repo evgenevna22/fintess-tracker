@@ -2,7 +2,7 @@ import { TrainingTypeEnum } from '../enums/training-type.enum';
 import { TrainingStateEnum } from '../enums/training-state.enum';
 
 export interface ITraining {
-  id: number;
+  id: string;
   type: TrainingTypeEnum;
   name: string;
   duration: number;
