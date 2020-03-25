@@ -5,6 +5,7 @@ import { CurrentTrainingComponent } from './components/current-training/current-
 import { NewTrainingComponent } from './components/new-training/new-training.component';
 import { PastTrainingComponent } from './components/past-training/past-training.component';
 import { AuthGuard } from '../auth/guards/auth.guard';
+import { PageCurrentTrainingGuard } from './guards/page-current-training.guard';
 
 const routers: Routes = [
   {
@@ -13,18 +14,16 @@ const routers: Routes = [
     children: [
       {
         path: 'new',
-        pathMatch: 'full',
         component: NewTrainingComponent
       },
       {
         path: 'past',
-        pathMatch: 'full',
         component: PastTrainingComponent
       },
       {
         path: 'current',
-        pathMatch: 'full',
-        component: CurrentTrainingComponent
+        component: CurrentTrainingComponent,
+        canActivate: [PageCurrentTrainingGuard]
       },
     ]
   }
@@ -32,5 +31,6 @@ const routers: Routes = [
 @NgModule({
   imports: [RouterModule.forChild(routers)],
   exports: [RouterModule],
+  providers: [PageCurrentTrainingGuard]
 })
 export class TrainingRoutingModule { }
