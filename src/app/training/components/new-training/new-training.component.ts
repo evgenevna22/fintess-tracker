@@ -33,9 +33,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
     this.selectedTraining.valueChanges
       .pipe(takeUntil(this.unsubscribe))
       .subscribe((id: string) => {
-        this.trainingsService.selectedExercise$.next(
-          this.trainings.find(training => training.id === id)
-        );
+        this.trainingsService.selectExercise(this.trainings.find(training => training.id === id));
       })
   }
 

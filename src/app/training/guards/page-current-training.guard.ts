@@ -7,7 +7,7 @@ export class PageCurrentTrainingGuard implements CanActivate {
     private readonly router: Router) {}
 
   canActivate(): boolean {
-    return !this.trainingsService.selectedExercise$.value 
+    return !this.trainingsService.getSelectExercise() 
       ? (this.router.navigate(['/trainings/new']) && false)
       : true;
   }

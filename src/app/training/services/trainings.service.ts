@@ -1,6 +1,6 @@
 import { OnDestroy } from '@angular/core';
 import { ITraining } from "../interfaces/training.interface";
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, Subject, Observable } from 'rxjs';
 import { TrainingStateEnum } from '../enums/training-state.enum';
 import { map, takeUntil } from 'rxjs/operators';
 import { AngularFirestore } from '@angular/fire/firestore';
@@ -8,13 +8,16 @@ import 'firebase/firestore';
 
 export class TrainingsService implements OnDestroy {
 
-  public selectedExercise$: BehaviorSubject<ITraining> = new BehaviorSubject<ITraining>(null);
-  public trainingsBS$: BehaviorSubject<ITraining[]> = new BehaviorSubject([]);
-  public availableExercisesBS$: BehaviorSubject<ITraining[]> = new BehaviorSubject([]);
+  public readonly selectedExercise$: Observable<ITraining>;
+  public readonly trainingsBS$: BehaviorSubject<ITraining[]> = new BehaviorSubject([]);
+  public readonly availableExercisesBS$: BehaviorSubject<ITraining[]> = new BehaviorSubject([]);
 
-  private unsubscribe: Subject<void> = new Subject<void>();
+  private readonly selectedExerciseBS$: BehaviorSubject<ITraining> = new BehaviorSubject<ITraining>(null);
+  private readonly unsubscribe: Subject<void> = new Subject<void>();
 
-  constructor(private readonly db: AngularFirestore) { }
+  constructor(private readonly db: AngularFirestore) {
+    this.selectedExercise$ = this.selectedExerciseBS$.asObservable();
+   }
 
   ngOnDestroy() {
     this.unsubscribe.next();
@@ -47,7 +50,7 @@ export class TrainingsService implements OnDestroy {
    * Cancel current training
    */
   public cancelTraining(): void {
-    const cancelledTraining = {...this.selectedExercise$.value};
+    const cancelledTraining = {...this.selectedExerciseBS$.value};
     cancelledTraining.state = TrainingStateEnum.Cancelled;
     this.updateTrainings(cancelledTraining);
   }
@@ -56,9 +59,17 @@ export class TrainingsService implements OnDestroy {
    * Complete current training
    */
   public completeTraining(): void {
-    const completedTraining = {...this.selectedExercise$.value};
+    const completedTraining = {...this.selectedExerciseBS$.value};
     completedTraining.state = TrainingStateEnum.Completed;
     this.updateTrainings(completedTraining);
+  }
+
+  public selectExercise(exercise: ITraining) {
+    this.selectedExerciseBS$.next(exercise);
+  }
+
+  public getSelectExercise(): ITraining {
+    return this.selectedExerciseBS$.value;
   }
 
   /**

@@ -24,11 +24,11 @@ export class CurrentTrainingComponent implements OnInit {
     private readonly dialog: MatDialog,
     private readonly router: Router,
     private readonly activatedRoute: ActivatedRoute,
-    private readonly TrainingsService: TrainingsService
+    private readonly trainingsService: TrainingsService
   ) {}
 
   ngOnInit() {
-    this.TrainingsService.selectedExercise$
+    this.trainingsService.selectedExercise$
       .pipe(takeUntil(this.unsubscribe))
       .subscribe((training: ITraining) => {
         if (training) {
@@ -63,7 +63,7 @@ export class CurrentTrainingComponent implements OnInit {
       .pipe(takeUntil(this.unsubscribe))
       .subscribe((result: boolean) => {
         if (result) {
-          this.TrainingsService.cancelTraining();
+          this.trainingsService.cancelTraining();
           this.router.navigate(['../new'], {relativeTo: this.activatedRoute});
         } else {
           this.startOrResumeTimer();
@@ -87,7 +87,7 @@ export class CurrentTrainingComponent implements OnInit {
    */
   private compeleteTraining(): void {
     clearInterval(this.timer);
-    this.TrainingsService.completeTraining();
+    this.trainingsService.completeTraining();
     this.router.navigate(['../new'], {relativeTo: this.activatedRoute});
   }
 }

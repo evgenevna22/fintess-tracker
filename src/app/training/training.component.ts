@@ -1,24 +1,23 @@
-import { Component, OnInit } from "@angular/core";
-import { IInternalNavigation } from "../shared/interfaces/internal-navigation.interface";
-import { ActivatedRoute } from "@angular/router";
-import { TrainingsService } from "./services/trainings.service";
+import { Component, OnInit } from '@angular/core';
+import { IInternalNavigation } from '../shared/interfaces/internal-navigation.interface';
+import { TrainingsService } from './services/trainings.service';
 import { Subscription } from 'rxjs';
 import { ITraining } from './interfaces/training.interface';
 
 @Component({
-  selector: "app-training",
-  templateUrl: "./training.component.html",
-  styleUrls: ["./training.component.scss"]
+  selector: 'app-training',
+  templateUrl: './training.component.html',
+  styleUrls: ['./training.component.scss']
 })
 export class TrainingComponent implements OnInit {
   public trainingNav: IInternalNavigation[] = [
     {
-      path: "new",
-      label: "New training"
+      path: 'new',
+      label: 'New training'
     },
     {
-      path: "past",
-      label: "Past training"
+      path: 'past',
+      label: 'Past training'
     }
   ];
   public isGoingTraining = false;
@@ -26,13 +25,12 @@ export class TrainingComponent implements OnInit {
   private trainingSubscription: Subscription;
 
   constructor(
-    private readonly route: ActivatedRoute,
-    private readonly TrainingsService: TrainingsService
+    private readonly trainingsService: TrainingsService
   ) {
   }
 
   ngOnInit() {
-    this.trainingSubscription = this.TrainingsService.selectedExercise$
+    this.trainingSubscription = this.trainingsService.selectedExercise$
       .subscribe((training: ITraining) => {
         this.isGoingTraining = !!training;
       })
