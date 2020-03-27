@@ -31,8 +31,8 @@ export class PastTrainingComponent implements OnInit, AfterViewInit {
   constructor(private readonly trainingsService: TrainingsService) { }
 
   ngOnInit() {
-    this.displayedColumns = ['id', 'type', 'name', 'duration', 'calories', 'date', 'state'];
-    this.trainingsService.trainingsBS$
+    this.displayedColumns = ['type', 'name', 'duration', 'calories', 'date', 'state'];
+    this.trainingsService.finishedTrainings$
       .pipe(
         takeUntil(this.unsubscribe),
         skipWhile(v => !v)
@@ -40,6 +40,7 @@ export class PastTrainingComponent implements OnInit, AfterViewInit {
       .subscribe((trainings: ITraining[]) => {
         this.pastTrainings.data = [...trainings];
       });
+    this.trainingsService.fetchTrainings();
   }
 
   ngAfterViewInit() {

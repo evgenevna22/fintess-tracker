@@ -9,14 +9,17 @@ import 'firebase/firestore';
 export class TrainingsService implements OnDestroy {
 
   public readonly selectedExercise$: Observable<ITraining>;
+  public readonly finishedTrainings$: Observable<ITraining[]>;
   public readonly trainingsBS$: BehaviorSubject<ITraining[]> = new BehaviorSubject([]);
   public readonly availableExercisesBS$: BehaviorSubject<ITraining[]> = new BehaviorSubject([]);
 
   private readonly selectedExerciseBS$: BehaviorSubject<ITraining> = new BehaviorSubject<ITraining>(null);
+  private readonly finishedTrainingsBS$: BehaviorSubject<ITraining[]> = new BehaviorSubject<ITraining[]>(null);
   private readonly unsubscribe: Subject<void> = new Subject<void>();
 
   constructor(private readonly db: AngularFirestore) {
     this.selectedExercise$ = this.selectedExerciseBS$.asObservable();
+    this.finishedTrainings$ = this.finishedTrainingsBS$.asObservable();
    }
 
   ngOnDestroy() {
@@ -43,6 +46,18 @@ export class TrainingsService implements OnDestroy {
       )
       .subscribe((res: ITraining[]) => {
         this.availableExercisesBS$.next(res);
+      })
+  }
+
+  public fetchTrainings(): void {
+    this.db
+      .collection('pastTrainings')
+      .valueChanges()
+      .pipe(
+        takeUntil(this.unsubscribe)
+      )
+      .subscribe((res: ITraining[]) => {
+        this.finishedTrainingsBS$.next(res);
       })
   }
 
