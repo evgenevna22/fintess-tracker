@@ -18,6 +18,7 @@ import {
   MatTableModule,
   MatSortModule,
   MatPaginatorModule,
+  MatSnackBarModule,
 } from '@angular/material';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 
@@ -39,7 +40,8 @@ const MODULES = [
   MatDialogModule,
   MatTableModule,
   MatSortModule,
-  MatPaginatorModule
+  MatPaginatorModule,
+  MatSnackBarModule
 ];
 
 @NgModule({

@@ -3,7 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import { IUserData } from 'src/app/shared/interfaces/user-data.interface';
 import { Router } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { TrainingsService } from 'src/app/training/services/trainings.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +13,8 @@ export class AuthService {
   public readonly isAuthUser$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   constructor(private readonly router: Router,
-              private readonly auth: AngularFireAuth) {
+              private readonly auth: AngularFireAuth,
+              private readonly snackBar: MatSnackBar) {
   }
 
   /**
@@ -40,8 +41,9 @@ export class AuthService {
       .then(() => {
         this.successfulAutorization();
       })
-      .catch(() => {
+      .catch((error: Error) => {
         this.isAuthUser$.next(false);
+        this.openSnackBar(error.message);
       });
   }
 
@@ -55,8 +57,9 @@ export class AuthService {
       .then(() => {
         this.successfulAutorization();
       })
-      .catch(() => {
+      .catch((error: Error) => {
         this.isAuthUser$.next(false);
+        this.openSnackBar(error.message);
       });
   }
 
@@ -91,5 +94,16 @@ export class AuthService {
   private successfulAutorization(): void {
     this.isAuthUser$.next(true);
     this.router.navigate(['/trainings']);
+  }
+
+  /**
+   * Snackbar opening handler
+   * @param message – info message
+   * @param action – action for popup
+   */
+  private openSnackBar(message: string, action: any = null): void {
+    this.snackBar.open(message, action, {
+      duration: 5000
+    })
   }
 }
