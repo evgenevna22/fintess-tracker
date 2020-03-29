@@ -1,4 +1,4 @@
-import { OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { ITraining } from "../interfaces/training.interface";
 import { BehaviorSubject, Subject, Observable } from 'rxjs';
 import { TrainingStateEnum } from '../enums/training-state.enum';
@@ -6,7 +6,8 @@ import { map, takeUntil } from 'rxjs/operators';
 import { AngularFirestore } from '@angular/fire/firestore';
 import 'firebase/firestore';
 
-export class TrainingsService implements OnDestroy {
+@Injectable()
+export class TrainingsService {
 
   public readonly selectedExercise$: Observable<ITraining>;
   public readonly finishedTrainings$: Observable<ITraining[]>;
@@ -22,7 +23,11 @@ export class TrainingsService implements OnDestroy {
     this.finishedTrainings$ = this.finishedTrainingsBS$.asObservable();
    }
 
-  ngOnDestroy() {
+  // todo: to do unsubscription
+  /**
+   * Cancell all subscriptions
+   */
+  public cancelSubscriptions(): void {
     this.unsubscribe.next();
     this.unsubscribe.complete();
   }
@@ -49,6 +54,9 @@ export class TrainingsService implements OnDestroy {
       })
   }
 
+  /**
+   * Fetch all past trainings
+   */
   public fetchTrainings(): void {
     this.db
       .collection('pastTrainings')
@@ -79,10 +87,17 @@ export class TrainingsService implements OnDestroy {
     this.updateTrainings(completedTraining);
   }
 
+  /**
+   * Handler of select exercise
+   * @param exercise – selected exercise
+   */
   public selectExercise(exercise: ITraining) {
     this.selectedExerciseBS$.next(exercise);
   }
 
+  /**
+   * Return selected exercise
+   */
   public getSelectExercise(): ITraining {
     return this.selectedExerciseBS$.value;
   }

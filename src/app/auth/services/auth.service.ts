@@ -1,22 +1,33 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { IUserData } from 'src/app/shared/interfaces/user-data.interface';
 import { Router } from '@angular/router';
+import { AngularFireAuth } from '@angular/fire/auth';
+import { TrainingsService } from 'src/app/training/services/trainings.service';
 
 @Injectable({
   providedIn: 'root'
 })
-
 export class AuthService {
 
-  public user$: BehaviorSubject<IUserData> = new BehaviorSubject<IUserData>(null);
-  public isAuthUser$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public readonly isAuthUser$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-  constructor(private readonly router: Router) {
-    if (localStorage.getItem('userData')) {
-      this.user$.next(JSON.parse(localStorage.getItem('userData')));
-      this.isAuthUser$.next(true);
-    }
+  constructor(private readonly router: Router,
+              private readonly auth: AngularFireAuth) {
+  }
+
+  /**
+   * Init authorization
+   */
+  public initAuthListener(): void {
+    this.auth.authState.subscribe(user => {
+      if (user) {
+        this.successfulAutorization();
+      } else {
+        this.isAuthUser$.next(false);
+        this.router.navigate(['/login']);
+      }
+    })
   }
   
   /**
@@ -24,11 +35,14 @@ export class AuthService {
    * @param data – user data
    */
   public registerUser(data: IUserData): void {
-    this.user$.next({
-      email: data.email,
-      userId: Math.round(Math.random() * 1000).toString()
-    });
-    this.isAuthUser$.next(true);
+    this.auth
+      .createUserWithEmailAndPassword(data.email, data.password)
+      .then(() => {
+        this.successfulAutorization();
+      })
+      .catch(() => {
+        this.isAuthUser$.next(false);
+      });
   }
 
   /**
@@ -36,20 +50,21 @@ export class AuthService {
    * @param data – user data
    */
   public login(data: IUserData): void {
-    this.user$.next({
-      email: data.email,
-      userId: Math.round(Math.random() * 1000).toString()
-    });
-    this.isAuthUser$.next(true);
-    localStorage.setItem('userData', JSON.stringify(this.user$.value));
-    this.router.navigate(['/trainings']);
+    this.auth
+      .signInWithEmailAndPassword(data.email, data.password)
+      .then(() => {
+        this.successfulAutorization();
+      })
+      .catch(() => {
+        this.isAuthUser$.next(false);
+      });
   }
 
   /**
    * Logout user
    */
   public logout(): void {
-    this.user$.next(null);
+    this.auth.signOut;
     this.isAuthUser$.next(false);
     localStorage.removeItem('userData');
     this.router.navigate(['/login']);
@@ -58,15 +73,23 @@ export class AuthService {
   /**
    * Get user
    */
-  public getUser(): IUserData {
+ /*  public getUser(): IUserData {
     return {...this.user$.value};
-  }
+  } */
 
   /**
    * Check user authorization
    * @return – boolean mark of user authorization
    */
   public isAuth(): boolean {
-    return this.user$.value !== null;
+    return this.isAuthUser$.value;
+  }
+
+  /**
+   * Handler of successful autorization
+   */
+  private successfulAutorization(): void {
+    this.isAuthUser$.next(true);
+    this.router.navigate(['/trainings']);
   }
 }
