@@ -3,28 +3,37 @@ import { SimpleDialogComponent } from './components/simple-dialog/simple-dialog.
 import { MaterialModule } from './material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { SpinnerComponent } from './components/spinner/spinner.component';
+import { PortalModule } from '@angular/cdk/portal';
 
 const MODULES = [
   MaterialModule,
   FormsModule,
   FlexLayoutModule,
   MaterialModule,
-  ReactiveFormsModule
+  ReactiveFormsModule,
+  PortalModule
+];
+
+const COMPONENTS = [
+  SimpleDialogComponent,
+  SpinnerComponent
 ]
 
 @NgModule({
   declarations: [
-    SimpleDialogComponent
+    ...COMPONENTS
   ],
   imports: [
     ...MODULES
   ],
   entryComponents: [
-    SimpleDialogComponent
+    SimpleDialogComponent,
+    SpinnerComponent
   ],
   exports: [
     ...MODULES,
-    SimpleDialogComponent,
+    ...COMPONENTS
   ],
 })
 export class SharedModule {}

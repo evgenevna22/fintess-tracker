@@ -34,7 +34,10 @@
     <button mat-raised-button
             type="submit"
             color="primary"
+            *ngIf="!isLoading"
             [disabled]="form.invalid"
             (click)="signUp()">Sign me up!</button>
+    <ng-template *ngIf="isLoading"
+                 [cdkPortalOutlet]="portalSpinner"></ng-template>
   </form>
 </section>

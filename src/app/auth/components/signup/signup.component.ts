@@ -1,16 +1,25 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
+import { ComponentPortal } from '@angular/cdk/portal';
+import { SpinnerComponent } from 'src/app/shared/components/spinner/spinner.component';
+import { takeUntil } from 'rxjs/operators';
+import { SpinnerService } from 'src/app/shared/components/spinner/spiner.service';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.scss']
 })
-export class SignupComponent implements OnInit {
+export class SignupComponent implements OnInit, OnDestroy {
 
   public form: FormGroup;
   public maxDate: Date;
+  public portalSpinner: ComponentPortal<SpinnerComponent>;
+  public isLoading = false;
+
+  private unsubscribe: Subject<void> = new Subject<void>();
 
   get email(): FormControl {
     return this.form.get('email') as FormControl;
@@ -20,7 +29,8 @@ export class SignupComponent implements OnInit {
     return this.form.get('password') as FormControl;
   }
 
-  constructor(private readonly authService: AuthService) { }
+  constructor(private readonly authService: AuthService,
+              private readonly spinnerService: SpinnerService) { }
 
   ngOnInit() {
     this.form = new FormGroup({
@@ -31,6 +41,17 @@ export class SignupComponent implements OnInit {
     })
     this.maxDate = new Date();
     this.maxDate.setFullYear(this.maxDate.getFullYear() - 18);
+    this.authService.loadingStateChanged
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe((state: boolean) => {
+        this.isLoading = state;
+      })
+    this.portalSpinner = this.spinnerService.createComponentPortal();
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
   }
 
   /**
