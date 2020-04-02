@@ -2,13 +2,12 @@
          fxLayout
          fxLayoutAlign="center">
   <mat-card fxFlex="500px"
-            fxLayout
             fxLayout="column"
-            fxLayoutAlign="center">
+            fxLayoutAlign="center center">
     <mat-card-header>Time to start the new training</mat-card-header>
     <mat-card-content fxLayout="column"
-                      fxLayoutAlign="center">
-      <mat-form-field>
+                      fxLayoutAlign="center center">
+      <mat-form-field *ngIf="!isLoading">
         <mat-select [formControl]="selectedTraining"
                     placeholder="Select your training">
           <mat-option *ngFor="let training of trainings"
@@ -17,12 +16,23 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
+      <ng-template *ngIf="isLoading"
+                   [cdkPortalOutlet]="portalSpinner"></ng-template>
     </mat-card-content>
-    <mat-card-actions>
-      <button mat-button
+    <mat-card-actions fxLayoutAlign="center center">
+      <button mat-raised-button
+              *ngIf="trainings else templateForEmptyAvaliableExs"
+              color="primary"
               (click)="createNewTraining()">
         Start!
       </button>
+      <ng-template #templateForEmptyAvaliableExs>
+        <button mat-raised-button
+                color="primary"
+                (click)="fetchAvaliableExs()">
+          Fetch again
+        </button>
+      </ng-template>
     </mat-card-actions>
   </mat-card>
 </section>

@@ -6,6 +6,7 @@ import { SpinnerComponent } from 'src/app/shared/components/spinner/spinner.comp
 import { takeUntil } from 'rxjs/operators';
 import { SpinnerService } from 'src/app/shared/components/spinner/spiner.service';
 import { Subject } from 'rxjs';
+import { UIService } from 'src/app/shared/services/ui-helper.service';
 
 @Component({
   selector: 'app-signup',
@@ -30,7 +31,8 @@ export class SignupComponent implements OnInit, OnDestroy {
   }
 
   constructor(private readonly authService: AuthService,
-              private readonly spinnerService: SpinnerService) { }
+              private readonly spinnerService: SpinnerService,
+              private readonly uiService: UIService) { }
 
   ngOnInit() {
     this.form = new FormGroup({
@@ -41,7 +43,7 @@ export class SignupComponent implements OnInit, OnDestroy {
     })
     this.maxDate = new Date();
     this.maxDate.setFullYear(this.maxDate.getFullYear() - 18);
-    this.authService.loadingStateChanged
+    this.uiService.loadingStateChanged
       .pipe(takeUntil(this.unsubscribe))
       .subscribe((state: boolean) => {
         this.isLoading = state;

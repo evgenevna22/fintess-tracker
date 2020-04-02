@@ -3,7 +3,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { IUserData } from 'src/app/shared/interfaces/user-data.interface';
 import { Router } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { UIService } from 'src/app/shared/services/ui-helper.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,11 +11,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class AuthService {
 
   public readonly isAuthUser$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  public readonly loadingStateChanged: Subject<boolean> = new Subject<boolean>();
 
   constructor(private readonly router: Router,
               private readonly auth: AngularFireAuth,
-              private readonly snackBar: MatSnackBar) {
+              private readonly uiService: UIService) {
   }
 
   /**
@@ -37,7 +36,7 @@ export class AuthService {
    * @param data – user data
    */
   public registerUser(data: IUserData): void {
-    this.loadingStateChanged.next(true);
+    this.uiService.loadingStateChanged.next(true);
     this.auth
       .createUserWithEmailAndPassword(data.email, data.password)
       .then(() => {
@@ -45,8 +44,8 @@ export class AuthService {
       })
       .catch((error: Error) => {
         this.isAuthUser$.next(false);
-        this.loadingStateChanged.next(false);
-        this.openSnackBar(error.message);
+        this.uiService.loadingStateChanged.next(false);
+        this.uiService.openSnackBar(error.message);
       });
   }
 
@@ -55,7 +54,7 @@ export class AuthService {
    * @param data – user data
    */
   public login(data: IUserData): void {
-    this.loadingStateChanged.next(true);
+    this.uiService.loadingStateChanged.next(true);
     this.auth
       .signInWithEmailAndPassword(data.email, data.password)
       .then(() => {
@@ -63,8 +62,8 @@ export class AuthService {
       })
       .catch((error: Error) => {
         this.isAuthUser$.next(false);
-        this.loadingStateChanged.next(false);
-        this.openSnackBar(error.message);
+        this.uiService.loadingStateChanged.next(false);
+        this.uiService.openSnackBar(error.message);
       });
   }
 
@@ -98,18 +97,7 @@ export class AuthService {
    */
   private successfulAutorization(): void {
     this.isAuthUser$.next(true);
-    this.loadingStateChanged.next(true);
+    this.uiService.loadingStateChanged.next(true);
     this.router.navigate(['/trainings']);
-  }
-
-  /**
-   * Snackbar opening handler
-   * @param message – info message
-   * @param action – action for popup
-   */
-  private openSnackBar(message: string, action: any = null): void {
-    this.snackBar.open(message, action, {
-      duration: 5000
-    })
   }
 }

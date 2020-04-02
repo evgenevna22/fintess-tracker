@@ -6,6 +6,7 @@ import { ComponentPortal } from '@angular/cdk/portal';
 import { SpinnerComponent } from 'src/app/shared/components/spinner/spinner.component';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { UIService } from 'src/app/shared/services/ui-helper.service';
 
 @Component({
   selector: 'app-login',
@@ -21,7 +22,8 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly authService: AuthService,
-    private readonly spinnerService: SpinnerService
+    private readonly spinnerService: SpinnerService,
+    private readonly uiService: UIService
   ) {}
 
   ngOnInit() {
@@ -29,11 +31,11 @@ export class LoginComponent implements OnInit, OnDestroy {
       email: new FormControl(null, [Validators.required, Validators.email]),
       password: new FormControl(null, Validators.required)
     });
-    this.authService.loadingStateChanged
+    this.uiService.loadingStateChanged
       .pipe(takeUntil(this.unsubscribe))
       .subscribe((state: boolean) => {
         this.isLoading = state;
-      })
+      });
     this.portalSpinner = this.spinnerService.createComponentPortal();
   }
 
