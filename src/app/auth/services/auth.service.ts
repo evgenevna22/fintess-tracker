@@ -71,10 +71,16 @@ export class AuthService {
    * Logout user
    */
   public logout(): void {
-    this.auth.signOut;
-    this.isAuthUser$.next(false);
-    localStorage.removeItem('userData');
-    this.router.navigate(['/login']);
+    this.auth.signOut()
+      .then(() => {
+        this.isAuthUser$.next(false);
+        localStorage.removeItem('userData');
+        this.router.navigate(['/login']);
+      })
+      .catch((error: Error) => {
+        const errorMessage = error && error.message ? error.message : 'Please try again';
+        this.uiService.openSnackBar(errorMessage);
+      })
   }
 
   /**
