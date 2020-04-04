@@ -4,6 +4,9 @@ import { IUserData } from 'src/app/shared/interfaces/user-data.interface';
 import { Router } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { UIService } from 'src/app/shared/services/ui-helper.service';
+import { Store } from '@ngrx/store';
+import { IAppState } from 'src/app/shared/interfaces/app-state.interface';
+import { START_LOADING, STOP_LOADING } from 'src/app/shared/ui/actions';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +17,8 @@ export class AuthService {
   constructor(
     private readonly router: Router,
     private readonly auth: AngularFireAuth,
-    private readonly uiService: UIService
+    private readonly uiService: UIService,
+    private readonly store: Store<{ ui: IAppState }>
   ) {}
 
   /**
@@ -36,7 +40,8 @@ export class AuthService {
    * @param data – user data
    */
   public registerUser(data: IUserData): void {
-    this.uiService.loadingStateChanged.next(true);
+    // this.uiService.loadingStateChanged.next(true);
+    this.store.dispatch({ type: START_LOADING });
     this.auth
       .createUserWithEmailAndPassword(data.email, data.password)
       .then(() => {
@@ -44,7 +49,8 @@ export class AuthService {
       })
       .catch((error: Error) => {
         this.isAuthUser$.next(false);
-        this.uiService.loadingStateChanged.next(false);
+        // this.uiService.loadingStateChanged.next(false);
+        this.store.dispatch({ type: STOP_LOADING });
         this.uiService.openSnackBar(error.message);
       });
   }
@@ -54,7 +60,8 @@ export class AuthService {
    * @param data – user data
    */
   public login(data: IUserData): void {
-    this.uiService.loadingStateChanged.next(true);
+    // this.uiService.loadingStateChanged.next(true);
+    this.store.dispatch({ type: START_LOADING });
     this.auth
       .signInWithEmailAndPassword(data.email, data.password)
       .then(() => {
@@ -62,7 +69,8 @@ export class AuthService {
       })
       .catch((error: Error) => {
         this.isAuthUser$.next(false);
-        this.uiService.loadingStateChanged.next(false);
+        // this.uiService.loadingStateChanged.next(false);
+        this.store.dispatch({ type: STOP_LOADING });
         this.uiService.openSnackBar(error.message);
       });
   }
@@ -104,7 +112,6 @@ export class AuthService {
    */
   private successfulAutorization(): void {
     this.isAuthUser$.next(true);
-    this.uiService.loadingStateChanged.next(true);
     this.router.navigate(['/trainings']);
   }
 }
