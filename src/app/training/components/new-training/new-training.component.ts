@@ -13,22 +13,23 @@ import { UIService } from 'src/app/shared/services/ui-helper.service';
 @Component({
   selector: 'app-new-training',
   templateUrl: './new-training.component.html',
-  styleUrls: ['./new-training.component.scss']
+  styleUrls: ['./new-training.component.scss'],
 })
 export class NewTrainingComponent implements OnInit, OnDestroy {
   public trainings: ITraining[];
   public selectedTraining: FormControl = new FormControl(null, Validators.required);
   public portalSpinner: ComponentPortal<SpinnerComponent>;
-  
+
   public isLoading = true;
 
   private unsubscribe: Subject<void> = new Subject<void>();
 
-  constructor(private readonly router: Router,
-              private readonly activatedRoute: ActivatedRoute,
-              private readonly trainingsService: TrainingsService,
-              private readonly spinnerService: SpinnerService,
-              private readonly uiService: UIService
+  constructor(
+    private readonly router: Router,
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly trainingsService: TrainingsService,
+    private readonly spinnerService: SpinnerService,
+    private readonly uiService: UIService
   ) {}
 
   ngOnInit() {
@@ -36,17 +37,15 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 
     this.uiService.loadingStateChanged
       .pipe(takeUntil(this.unsubscribe))
-      .subscribe((state: boolean) => this.isLoading = state);
+      .subscribe((state: boolean) => (this.isLoading = state));
 
     this.trainingsService.availableExercisesBS$
       .pipe(takeUntil(this.unsubscribe))
-      .subscribe((res: ITraining[]) => this.trainings = res);
+      .subscribe((res: ITraining[]) => (this.trainings = res));
 
-    this.selectedTraining.valueChanges
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe((id: string) => {
-        this.trainingsService.selectExercise(this.trainings.find(training => training.id === id));
-      });
+    this.selectedTraining.valueChanges.pipe(takeUntil(this.unsubscribe)).subscribe((id: string) => {
+      this.trainingsService.selectExercise(this.trainings.find((training) => training.id === id));
+    });
 
     this.fetchAvaliableExs();
   }
@@ -60,7 +59,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
    * Creating the new training
    */
   public createNewTraining(): void {
-    this.router.navigate(['../current'], {relativeTo: this.activatedRoute});
+    this.router.navigate(['../current'], { relativeTo: this.activatedRoute });
   }
 
   /**

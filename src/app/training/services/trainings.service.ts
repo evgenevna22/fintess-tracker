@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ITraining } from "../interfaces/training.interface";
+import { ITraining } from '../interfaces/training.interface';
 import { BehaviorSubject, Subject, Observable } from 'rxjs';
 import { TrainingStateEnum } from '../enums/training-state.enum';
 import { map, takeUntil } from 'rxjs/operators';
@@ -9,7 +9,6 @@ import { UIService } from 'src/app/shared/services/ui-helper.service';
 
 @Injectable()
 export class TrainingsService {
-
   public readonly selectedExercise$: Observable<ITraining>;
   public readonly finishedTrainings$: Observable<ITraining[]>;
   public readonly trainingsBS$: BehaviorSubject<ITraining[]> = new BehaviorSubject([]);
@@ -19,11 +18,10 @@ export class TrainingsService {
   private readonly finishedTrainingsBS$: BehaviorSubject<ITraining[]> = new BehaviorSubject<ITraining[]>(null);
   private readonly unsubscribe: Subject<void> = new Subject<void>();
 
-  constructor(private readonly db: AngularFirestore,
-              private readonly uiService: UIService) {
+  constructor(private readonly db: AngularFirestore, private readonly uiService: UIService) {
     this.selectedExercise$ = this.selectedExerciseBS$.asObservable();
     this.finishedTrainings$ = this.finishedTrainingsBS$.asObservable();
-   }
+  }
 
   // todo: to do unsubscription
   /**
@@ -39,16 +37,17 @@ export class TrainingsService {
    */
   public fetchAvailableExercises(): void {
     this.uiService.loadingStateChanged.next(true);
-    this.db.collection('avaliableExercises')
+    this.db
+      .collection('avaliableExercises')
       .snapshotChanges()
       .pipe(
-        map(data => {
+        map((data: any) => {
           return data.map((item: any) => {
             return {
               id: item.payload.doc.id,
-              ...item.payload.doc.data()
-            }
-          })
+              ...item.payload.doc.data(),
+            };
+          });
         }),
         takeUntil(this.unsubscribe)
       )
@@ -59,10 +58,10 @@ export class TrainingsService {
         },
         (error: Error) => {
           this.uiService.loadingStateChanged.next(false);
-          this.uiService.openSnackBar(error.message)
+          this.uiService.openSnackBar(error.message);
           this.availableExercisesBS$.next(null);
         }
-      )
+      );
   }
 
   /**
@@ -72,19 +71,17 @@ export class TrainingsService {
     this.db
       .collection('pastTrainings')
       .valueChanges()
-      .pipe(
-        takeUntil(this.unsubscribe)
-      )
+      .pipe(takeUntil(this.unsubscribe))
       .subscribe((res: ITraining[]) => {
         this.finishedTrainingsBS$.next(res);
-      })
+      });
   }
 
   /**
    * Cancel current training
    */
   public cancelTraining(): void {
-    const cancelledTraining = {...this.selectedExerciseBS$.value};
+    const cancelledTraining = { ...this.selectedExerciseBS$.value };
     cancelledTraining.state = TrainingStateEnum.Cancelled;
     this.updateTrainings(cancelledTraining);
   }
@@ -93,7 +90,7 @@ export class TrainingsService {
    * Complete current training
    */
   public completeTraining(): void {
-    const completedTraining = {...this.selectedExerciseBS$.value};
+    const completedTraining = { ...this.selectedExerciseBS$.value };
     completedTraining.state = TrainingStateEnum.Completed;
     this.updateTrainings(completedTraining);
   }

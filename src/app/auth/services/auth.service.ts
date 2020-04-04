@@ -1,36 +1,36 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { IUserData } from 'src/app/shared/interfaces/user-data.interface';
 import { Router } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { UIService } from 'src/app/shared/services/ui-helper.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-
   public readonly isAuthUser$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-  constructor(private readonly router: Router,
-              private readonly auth: AngularFireAuth,
-              private readonly uiService: UIService) {
-  }
+  constructor(
+    private readonly router: Router,
+    private readonly auth: AngularFireAuth,
+    private readonly uiService: UIService
+  ) {}
 
   /**
    * Init authorization
    */
   public initAuthListener(): void {
-    this.auth.authState.subscribe(user => {
+    this.auth.authState.subscribe((user) => {
       if (user) {
         this.successfulAutorization();
       } else {
         this.isAuthUser$.next(false);
         this.router.navigate(['/login']);
       }
-    })
+    });
   }
-  
+
   /**
    * Register user
    * @param data – user data
@@ -71,7 +71,8 @@ export class AuthService {
    * Logout user
    */
   public logout(): void {
-    this.auth.signOut()
+    this.auth
+      .signOut()
       .then(() => {
         this.isAuthUser$.next(false);
         localStorage.removeItem('userData');
@@ -80,15 +81,15 @@ export class AuthService {
       .catch((error: Error) => {
         const errorMessage = error && error.message ? error.message : 'Please try again';
         this.uiService.openSnackBar(errorMessage);
-      })
+      });
   }
 
   /**
    * Get user
    */
- /*  public getUser(): IUserData {
-    return {...this.user$.value};
-  } */
+  /*  public getUser(): IUserData {
+     return {...this.user$.value};
+   } */
 
   /**
    * Check user authorization
