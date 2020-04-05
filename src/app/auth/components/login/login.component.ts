@@ -4,9 +4,9 @@ import { AuthService } from '../../services/auth.service';
 import { SpinnerService } from 'src/app/shared/components/spinner/spiner.service';
 import { ComponentPortal } from '@angular/cdk/portal';
 import { SpinnerComponent } from 'src/app/shared/components/spinner/spinner.component';
-import { map } from 'rxjs/operators';
 import { Subject, Observable } from 'rxjs';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
+import * as fromRoot from '../../../app.reducer';
 import { IAppState } from 'src/app/shared/interfaces/app-state.interface';
 
 @Component({
@@ -24,17 +24,12 @@ export class LoginComponent implements OnInit, OnDestroy {
   constructor(
     private readonly authService: AuthService,
     private readonly spinnerService: SpinnerService,
-    private readonly store: Store<{ ui: IAppState }>
+    private readonly store: Store<IAppState>
   ) {}
 
   ngOnInit() {
     this.buildForm();
-    this.isLoading$ = this.store.pipe(map((state: { ui: IAppState }) => state.ui.isLoading));
-    // this.uiService.loadingStateChanged
-    //   .pipe(takeUntil(this.unsubscribe))
-    //   .subscribe((state: boolean) => {
-    //     this.isLoading = state;
-    //   });
+    this.isLoading$ = this.store.pipe(select(fromRoot.getIsLoading));
     this.portalSpinner = this.spinnerService.createComponentPortal();
   }
 

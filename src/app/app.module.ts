@@ -13,7 +13,7 @@ import { StoreModule } from '@ngrx/store';
 import localeRu from '@angular/common/locales/ru';
 import { registerLocaleData } from '@angular/common';
 import { environment } from 'src/environments/environment';
-import { appReducer } from './app.reducer';
+import { reducers } from './app.reducer';
 
 import { AppComponent } from './app.component';
 import { SignupComponent } from './auth/components/signup/signup.component';
@@ -43,7 +43,7 @@ registerLocaleData(localeRu);
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
     AngularFireAuthModule,
-    StoreModule.forRoot({ui: appReducer})
+    StoreModule.forRoot(reducers)
   ],
   providers: [],
   bootstrap: [AppComponent]

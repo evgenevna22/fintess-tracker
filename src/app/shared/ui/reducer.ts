@@ -1,11 +1,11 @@
-import { IAppState } from '../interfaces/app-state.interface';
+import { IUIState } from '../interfaces/ui-state.interface';
 import { UIActions, START_LOADING, STOP_LOADING } from './actions';
 
-const initialState: IAppState = {
+const initialState: IUIState = {
   isLoading: false,
 };
 
-export function UIReducer(state = initialState, action: UIActions): IAppState {
+export function UIReducer(state = initialState, action: UIActions): IUIState {
   switch (action.type) {
     case START_LOADING:
       return {
@@ -16,8 +16,8 @@ export function UIReducer(state = initialState, action: UIActions): IAppState {
         isLoading: false,
       };
     default:
-      state;
+      return state;
   }
 }
 
-export const getIsLoading = (state: IAppState) => state.isLoading;
+export const getIsLoading = (state: IUIState) => state.isLoading;

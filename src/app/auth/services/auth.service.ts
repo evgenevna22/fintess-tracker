@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { IUserData } from 'src/app/shared/interfaces/user-data.interface';
 import { Router } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { UIService } from 'src/app/shared/services/ui-helper.service';
 import { Store } from '@ngrx/store';
+
+import { UIService } from 'src/app/shared/services/ui-helper.service';
+import { IUserData } from 'src/app/shared/interfaces/user-data.interface';
 import { IAppState } from 'src/app/shared/interfaces/app-state.interface';
-import { START_LOADING, STOP_LOADING } from 'src/app/shared/ui/actions';
+import * as fromUI from '../../shared/ui/actions';
+import * as fromAuth from '../../auth/actions';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +20,7 @@ export class AuthService {
     private readonly router: Router,
     private readonly auth: AngularFireAuth,
     private readonly uiService: UIService,
-    private readonly store: Store<{ ui: IAppState }>
+    private readonly store: Store<IAppState>
   ) {}
 
   /**
@@ -29,7 +31,7 @@ export class AuthService {
       if (user) {
         this.successfulAutorization();
       } else {
-        this.isAuthUser$.next(false);
+        this.store.dispatch(new fromAuth.SetUnautheticated());
         this.router.navigate(['/login']);
       }
     });
@@ -40,17 +42,15 @@ export class AuthService {
    * @param data – user data
    */
   public registerUser(data: IUserData): void {
-    // this.uiService.loadingStateChanged.next(true);
-    this.store.dispatch({ type: START_LOADING });
+    this.store.dispatch(new fromUI.StartLoading());
     this.auth
       .createUserWithEmailAndPassword(data.email, data.password)
       .then(() => {
         this.successfulAutorization();
       })
       .catch((error: Error) => {
-        this.isAuthUser$.next(false);
-        // this.uiService.loadingStateChanged.next(false);
-        this.store.dispatch({ type: STOP_LOADING });
+        this.store.dispatch(new fromAuth.SetUnautheticated());
+        this.store.dispatch(new fromUI.StopLoading());
         this.uiService.openSnackBar(error.message);
       });
   }
@@ -60,17 +60,15 @@ export class AuthService {
    * @param data – user data
    */
   public login(data: IUserData): void {
-    // this.uiService.loadingStateChanged.next(true);
-    this.store.dispatch({ type: START_LOADING });
+    this.store.dispatch(new fromUI.StartLoading());
     this.auth
       .signInWithEmailAndPassword(data.email, data.password)
       .then(() => {
         this.successfulAutorization();
       })
       .catch((error: Error) => {
-        this.isAuthUser$.next(false);
-        // this.uiService.loadingStateChanged.next(false);
-        this.store.dispatch({ type: STOP_LOADING });
+        this.store.dispatch(new fromAuth.SetUnautheticated());
+        this.store.dispatch(new fromUI.StopLoading());
         this.uiService.openSnackBar(error.message);
       });
   }
@@ -82,7 +80,7 @@ export class AuthService {
     this.auth
       .signOut()
       .then(() => {
-        this.isAuthUser$.next(false);
+        this.store.dispatch(new fromAuth.SetUnautheticated());
         localStorage.removeItem('userData');
         this.router.navigate(['/login']);
       })
@@ -100,18 +98,10 @@ export class AuthService {
    } */
 
   /**
-   * Check user authorization
-   * @return – boolean mark of user authorization
-   */
-  public isAuth(): boolean {
-    return this.isAuthUser$.value;
-  }
-
-  /**
    * Handler of successful autorization
    */
   private successfulAutorization(): void {
-    this.isAuthUser$.next(true);
+    this.store.dispatch(new fromAuth.SetAutheticated());
     this.router.navigate(['/trainings']);
   }
 }

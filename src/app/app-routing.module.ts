@@ -21,7 +21,7 @@ const routes: Routes = [
   {
     path: 'trainings',
     loadChildren: () => import('./training/training.module').then((m) => m.TrainingModule),
-    canActivate: [AuthGuard],
+    canLoad: [AuthGuard],
   },
 ];
 
