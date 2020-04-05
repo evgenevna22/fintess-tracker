@@ -7,7 +7,7 @@
     <mat-card-header>Time to start the new training</mat-card-header>
     <mat-card-content fxLayout="column"
                       fxLayoutAlign="center center">
-      <mat-form-field *ngIf="!isLoading">
+      <mat-form-field *ngIf="!(isLoading$ | async)">
         <mat-select [formControl]="selectedTraining"
                     placeholder="Select your training">
           <mat-option *ngFor="let training of trainings"
@@ -16,7 +16,7 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <ng-template *ngIf="isLoading"
+      <ng-template *ngIf="isLoading$ | async"
                    [cdkPortalOutlet]="portalSpinner"></ng-template>
     </mat-card-content>
     <mat-card-actions fxLayoutAlign="center center">

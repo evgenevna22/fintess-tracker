@@ -6,6 +6,9 @@ import { map, takeUntil } from 'rxjs/operators';
 import { AngularFirestore } from '@angular/fire/firestore';
 import 'firebase/firestore';
 import { UIService } from 'src/app/shared/services/ui-helper.service';
+import { Store } from '@ngrx/store';
+import { IAppState } from 'src/app/shared/interfaces/app-state.interface';
+import * as fromUI from '../../shared/ui/actions';
 
 @Injectable()
 export class TrainingsService {
@@ -18,7 +21,7 @@ export class TrainingsService {
   private readonly finishedTrainingsBS$: BehaviorSubject<ITraining[]> = new BehaviorSubject<ITraining[]>(null);
   private readonly unsubscribe: Subject<void> = new Subject<void>();
 
-  constructor(private readonly db: AngularFirestore, private readonly uiService: UIService) {
+  constructor(private readonly db: AngularFirestore, private readonly uiService: UIService, private readonly store: Store<IAppState>) {
     this.selectedExercise$ = this.selectedExerciseBS$.asObservable();
     this.finishedTrainings$ = this.finishedTrainingsBS$.asObservable();
   }
@@ -36,7 +39,7 @@ export class TrainingsService {
    * Fetch avaliable training from database
    */
   public fetchAvailableExercises(): void {
-    this.uiService.loadingStateChanged.next(true);
+    this.store.dispatch(new fromUI.StartLoading());
     this.db
       .collection('avaliableExercises')
       .snapshotChanges()
@@ -53,11 +56,11 @@ export class TrainingsService {
       )
       .subscribe(
         (res: ITraining[]) => {
-          this.uiService.loadingStateChanged.next(false);
+          this.store.dispatch(new fromUI.StopLoading());
           this.availableExercisesBS$.next(res);
         },
         (error: Error) => {
-          this.uiService.loadingStateChanged.next(false);
+          this.store.dispatch(new fromUI.StopLoading());
           this.uiService.openSnackBar(error.message);
           this.availableExercisesBS$.next(null);
         }

@@ -4,11 +4,13 @@ import { TrainingsService } from '../../services/trainings.service';
 import { ITraining } from '../../interfaces/training.interface';
 import { FormControl, Validators } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
 import { ComponentPortal } from '@angular/cdk/portal';
 import { SpinnerComponent } from 'src/app/shared/components/spinner/spinner.component';
 import { SpinnerService } from 'src/app/shared/components/spinner/spiner.service';
-import { UIService } from 'src/app/shared/services/ui-helper.service';
+import { Store, select } from '@ngrx/store';
+import { IAppState } from 'src/app/shared/interfaces/app-state.interface';
+import * as fromRoot from '../../../app.reducer';
 
 @Component({
   selector: 'app-new-training',
@@ -20,7 +22,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
   public selectedTraining: FormControl = new FormControl(null, Validators.required);
   public portalSpinner: ComponentPortal<SpinnerComponent>;
 
-  public isLoading = true;
+  public isLoading$: Observable<boolean>;
 
   private unsubscribe: Subject<void> = new Subject<void>();
 
@@ -29,15 +31,13 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
     private readonly activatedRoute: ActivatedRoute,
     private readonly trainingsService: TrainingsService,
     private readonly spinnerService: SpinnerService,
-    private readonly uiService: UIService
+    private readonly store: Store<IAppState>
   ) {}
 
   ngOnInit() {
     this.portalSpinner = this.spinnerService.createComponentPortal();
 
-    this.uiService.loadingStateChanged
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe((state: boolean) => (this.isLoading = state));
+    this.isLoading$ = this.store.pipe(select(fromRoot.getIsLoading));
 
     this.trainingsService.availableExercisesBS$
       .pipe(takeUntil(this.unsubscribe))
