@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
 import { Router } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Store } from '@ngrx/store';
@@ -14,7 +13,6 @@ import * as fromAuth from '../../auth/actions';
   providedIn: 'root',
 })
 export class AuthService {
-  public readonly isAuthUser$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   constructor(
     private readonly router: Router,
@@ -88,13 +86,6 @@ export class AuthService {
         this.uiService.openSnackBar(errorMessage);
       });
   }
-
-  /**
-   * Get user
-   */
-  /*  public getUser(): IUserData {
-     return {...this.user$.value};
-   } */
 
   /**
    * Handler of successful autorization

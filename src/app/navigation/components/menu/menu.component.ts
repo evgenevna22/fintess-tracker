@@ -4,7 +4,6 @@ import {
   NOT_AUTH_NAVIGATION_LIST,
 } from '../../consts/navigation-consts';
 import { IAppNavigation } from '../../interfaces/app-navigation.interface';
-import { AuthService } from 'src/app/auth/services/auth.service';
 import { Subscription } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { IAppState } from 'src/app/shared/interfaces/app-state.interface';

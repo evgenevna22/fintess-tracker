@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subject, Observable } from 'rxjs';
+import { Subject } from 'rxjs';
 import { map, takeUntil, take } from 'rxjs/operators';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Store, select } from '@ngrx/store';
