@@ -40,7 +40,7 @@ export class PastTrainingComponent implements OnInit, AfterViewInit {
       .subscribe((trainings: ITraining[]) => {
         this.pastTrainings.data = [...trainings];
       });
-    this.trainingsService.fetchTrainings();
+    this.trainingsService.fetchFinishedTrainings();
   }
 
   ngAfterViewInit() {

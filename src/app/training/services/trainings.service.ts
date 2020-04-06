@@ -1,29 +1,31 @@
 import { Injectable } from '@angular/core';
-import { ITraining } from '../interfaces/training.interface';
 import { BehaviorSubject, Subject, Observable } from 'rxjs';
-import { TrainingStateEnum } from '../enums/training-state.enum';
 import { map, takeUntil } from 'rxjs/operators';
 import { AngularFirestore } from '@angular/fire/firestore';
-import 'firebase/firestore';
-import { UIService } from 'src/app/shared/services/ui-helper.service';
 import { Store } from '@ngrx/store';
-import { IAppState } from 'src/app/shared/interfaces/app-state.interface';
+import 'firebase/firestore';
+
+import { TrainingStateEnum } from '../enums/training-state.enum';
+import { ITraining } from '../interfaces/training.interface';
+import { UIService } from 'src/app/shared/services/ui-helper.service';
+import { IFullTrainingState } from 'src/app/shared/interfaces/training-state.interface';
 import * as fromUI from '../../shared/ui/actions';
+import * as fromTrainings from '../actions';
 
 @Injectable()
 export class TrainingsService {
   public readonly selectedExercise$: Observable<ITraining>;
-  public readonly finishedTrainings$: Observable<ITraining[]>;
-  public readonly trainingsBS$: BehaviorSubject<ITraining[]> = new BehaviorSubject([]);
-  public readonly availableExercisesBS$: BehaviorSubject<ITraining[]> = new BehaviorSubject([]);
 
   private readonly selectedExerciseBS$: BehaviorSubject<ITraining> = new BehaviorSubject<ITraining>(null);
-  private readonly finishedTrainingsBS$: BehaviorSubject<ITraining[]> = new BehaviorSubject<ITraining[]>(null);
+
   private readonly unsubscribe: Subject<void> = new Subject<void>();
 
-  constructor(private readonly db: AngularFirestore, private readonly uiService: UIService, private readonly store: Store<IAppState>) {
+  constructor(
+    private readonly db: AngularFirestore,
+    private readonly uiService: UIService,
+    private readonly store: Store<IFullTrainingState>
+  ) {
     this.selectedExercise$ = this.selectedExerciseBS$.asObservable();
-    this.finishedTrainings$ = this.finishedTrainingsBS$.asObservable();
   }
 
   // todo: to do unsubscription
@@ -57,12 +59,11 @@ export class TrainingsService {
       .subscribe(
         (res: ITraining[]) => {
           this.store.dispatch(new fromUI.StopLoading());
-          this.availableExercisesBS$.next(res);
+          this.store.dispatch(new fromTrainings.SetAvailableTrainings(res));
         },
         (error: Error) => {
           this.store.dispatch(new fromUI.StopLoading());
           this.uiService.openSnackBar(error.message);
-          this.availableExercisesBS$.next(null);
         }
       );
   }
@@ -70,13 +71,13 @@ export class TrainingsService {
   /**
    * Fetch all past trainings
    */
-  public fetchTrainings(): void {
+  public fetchFinishedTrainings(): void {
     this.db
       .collection('pastTrainings')
       .valueChanges()
       .pipe(takeUntil(this.unsubscribe))
       .subscribe((res: ITraining[]) => {
-        this.finishedTrainingsBS$.next(res);
+        this.store.dispatch(new fromTrainings.SetFinishedTrainings(res));
       });
   }
 
@@ -86,7 +87,8 @@ export class TrainingsService {
   public cancelTraining(): void {
     const cancelledTraining = { ...this.selectedExerciseBS$.value };
     cancelledTraining.state = TrainingStateEnum.Cancelled;
-    this.updateTrainings(cancelledTraining);
+    this.db.collection('pastTrainings').add(cancelledTraining);
+    this.store.dispatch(new fromTrainings.StopTraining());
   }
 
   /**
@@ -95,7 +97,8 @@ export class TrainingsService {
   public completeTraining(): void {
     const completedTraining = { ...this.selectedExerciseBS$.value };
     completedTraining.state = TrainingStateEnum.Completed;
-    this.updateTrainings(completedTraining);
+    this.db.collection('pastTrainings').add(completedTraining);
+    this.store.dispatch(new fromTrainings.StopTraining());
   }
 
   /**
@@ -103,23 +106,6 @@ export class TrainingsService {
    * @param exercise – selected exercise
    */
   public selectExercise(exercise: ITraining) {
-    this.selectedExerciseBS$.next(exercise);
-  }
-
-  /**
-   * Return selected exercise
-   */
-  public getSelectExercise(): ITraining {
-    return this.selectedExerciseBS$.value;
-  }
-
-  /**
-   * Update trainings models and post training to database
-   * @param training – training model
-   */
-  private updateTrainings(training: ITraining): void {
-    const updatedValue = [...this.trainingsBS$.value, training];
-    this.trainingsBS$.next(updatedValue);
-    this.db.collection('pastTrainings').add(training);
+    this.store.dispatch(new fromTrainings.StartTraining(exercise));
   }
 }

@@ -1,14 +1,14 @@
 import { Router, CanLoad } from '@angular/router';
-import { TrainingsService } from '../services/trainings.service';
+import { Store } from '@ngrx/store';
+import { IFullTrainingState } from 'src/app/shared/interfaces/training-state.interface';
 
 export class PageCurrentTrainingGuard implements CanLoad {
-  
-  constructor(private readonly trainingsService: TrainingsService,
-    private readonly router: Router) {}
+  constructor(
+    private readonly store: Store<IFullTrainingState>,
+    private readonly router: Router
+  ) {}
 
   canLoad(): boolean {
-    return !this.trainingsService.getSelectExercise() 
-      ? (this.router.navigate(['/trainings/new']) && false)
-      : true;
+    return true
   }
 }
