@@ -27,12 +27,11 @@ export class AuthService {
    * Init authorization
    */
   public initAuthListener(): void {
-    this.auth.authState.subscribe((user) => {
+    this.auth.authState.subscribe((user: firebase.User) => {
       if (user) {
         this.successfulAutorization();
       } else {
         this.store.dispatch(new fromAuth.SetUnautheticated());
-        this.router.navigate(['/login']);
       }
     });
   }
