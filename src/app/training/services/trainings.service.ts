@@ -1,23 +1,20 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject, Observable } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
+import { map, takeUntil, take } from 'rxjs/operators';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import 'firebase/firestore';
 
 import { TrainingStateEnum } from '../enums/training-state.enum';
 import { ITraining } from '../interfaces/training.interface';
 import { UIService } from 'src/app/shared/services/ui-helper.service';
 import { IFullTrainingState } from 'src/app/shared/interfaces/training-state.interface';
-import * as fromUI from '../../shared/ui/actions';
-import * as fromTrainings from '../actions';
+import * as UI from '../../shared/ui/actions';
+import * as trainings from '../actions';
+import * as fromTrainings from '../reducer';
 
 @Injectable()
 export class TrainingsService {
-  public readonly selectedExercise$: Observable<ITraining>;
-
-  private readonly selectedExerciseBS$: BehaviorSubject<ITraining> = new BehaviorSubject<ITraining>(null);
-
   private readonly unsubscribe: Subject<void> = new Subject<void>();
 
   constructor(
@@ -25,7 +22,6 @@ export class TrainingsService {
     private readonly uiService: UIService,
     private readonly store: Store<IFullTrainingState>
   ) {
-    this.selectedExercise$ = this.selectedExerciseBS$.asObservable();
   }
 
   // todo: to do unsubscription
@@ -41,7 +37,7 @@ export class TrainingsService {
    * Fetch avaliable training from database
    */
   public fetchAvailableExercises(): void {
-    this.store.dispatch(new fromUI.StartLoading());
+    this.store.dispatch(new UI.StartLoading());
     this.db
       .collection('avaliableExercises')
       .snapshotChanges()
@@ -58,11 +54,11 @@ export class TrainingsService {
       )
       .subscribe(
         (res: ITraining[]) => {
-          this.store.dispatch(new fromUI.StopLoading());
-          this.store.dispatch(new fromTrainings.SetAvailableTrainings(res));
+          this.store.dispatch(new UI.StopLoading());
+          this.store.dispatch(new trainings.SetAvailableTrainings(res));
         },
         (error: Error) => {
-          this.store.dispatch(new fromUI.StopLoading());
+          this.store.dispatch(new UI.StopLoading());
           this.uiService.openSnackBar(error.message);
         }
       );
@@ -77,7 +73,7 @@ export class TrainingsService {
       .valueChanges()
       .pipe(takeUntil(this.unsubscribe))
       .subscribe((res: ITraining[]) => {
-        this.store.dispatch(new fromTrainings.SetFinishedTrainings(res));
+        this.store.dispatch(new trainings.SetFinishedTrainings(res));
       });
   }
 
@@ -85,27 +81,33 @@ export class TrainingsService {
    * Cancel current training
    */
   public cancelTraining(): void {
-    const cancelledTraining = { ...this.selectedExerciseBS$.value };
-    cancelledTraining.state = TrainingStateEnum.Cancelled;
-    this.db.collection('pastTrainings').add(cancelledTraining);
-    this.store.dispatch(new fromTrainings.StopTraining());
+    this.store
+      .pipe(select(fromTrainings.getSelectedTraining), take(1))
+      .subscribe((training: ITraining) => {
+        training.state = TrainingStateEnum.Cancelled;
+        this.db.collection('pastTrainings').add(training);
+        this.store.dispatch(new trainings.StopTraining());
+      });
   }
 
   /**
    * Complete current training
    */
   public completeTraining(): void {
-    const completedTraining = { ...this.selectedExerciseBS$.value };
-    completedTraining.state = TrainingStateEnum.Completed;
-    this.db.collection('pastTrainings').add(completedTraining);
-    this.store.dispatch(new fromTrainings.StopTraining());
+    this.store
+      .pipe(select(fromTrainings.getSelectedTraining), take(1))
+      .subscribe((training: ITraining) => {
+        training.state = TrainingStateEnum.Completed;
+        this.db.collection('pastTrainings').add(training);
+        this.store.dispatch(new trainings.StopTraining());
+      });
   }
 
   /**
-   * Handler of select exercise
-   * @param exercise – selected exercise
+   * Handler of selected exercise
+   * @param id – selected exercise id
    */
-  public selectExercise(exercise: ITraining) {
-    this.store.dispatch(new fromTrainings.StartTraining(exercise));
+  public selectTraining(id: string) {
+    this.store.dispatch(new trainings.StartTraining(id));
   }
 }

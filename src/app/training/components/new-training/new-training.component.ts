@@ -9,8 +9,9 @@ import { ComponentPortal } from '@angular/cdk/portal';
 import { SpinnerComponent } from 'src/app/shared/components/spinner/spinner.component';
 import { SpinnerService } from 'src/app/shared/components/spinner/spiner.service';
 import { Store, select } from '@ngrx/store';
-import { IAppState } from 'src/app/shared/interfaces/app-state.interface';
 import * as fromRoot from '../../../app.reducer';
+import * as fromTraining from '../../reducer';
+import { IFullTrainingState } from 'src/app/shared/interfaces/training-state.interface';
 
 @Component({
   selector: 'app-new-training',
@@ -18,8 +19,11 @@ import * as fromRoot from '../../../app.reducer';
   styleUrls: ['./new-training.component.scss'],
 })
 export class NewTrainingComponent implements OnInit, OnDestroy {
-  public trainings: ITraining[];
-  public selectedTraining: FormControl = new FormControl(null, Validators.required);
+  public trainings$: Observable<ITraining[]>;
+  public selectedTraining: FormControl = new FormControl(
+    null,
+    Validators.required
+  );
   public portalSpinner: ComponentPortal<SpinnerComponent>;
 
   public isLoading$: Observable<boolean>;
@@ -31,23 +35,22 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
     private readonly activatedRoute: ActivatedRoute,
     private readonly trainingsService: TrainingsService,
     private readonly spinnerService: SpinnerService,
-    private readonly store: Store<IAppState>
+    private readonly store: Store<IFullTrainingState>
   ) {}
 
   ngOnInit() {
+    this.fetchAvaliableExs();
+
     this.portalSpinner = this.spinnerService.createComponentPortal();
 
     this.isLoading$ = this.store.pipe(select(fromRoot.getIsLoading));
+    this.trainings$ = this.store.pipe(select(fromTraining.getAvaliableTrainings));
 
-    this.trainingsService.availableExercisesBS$
+    this.selectedTraining.valueChanges
       .pipe(takeUntil(this.unsubscribe))
-      .subscribe((res: ITraining[]) => (this.trainings = res));
-
-    this.selectedTraining.valueChanges.pipe(takeUntil(this.unsubscribe)).subscribe((id: string) => {
-      this.trainingsService.selectExercise(this.trainings.find((training) => training.id === id));
-    });
-
-    this.fetchAvaliableExs();
+      .subscribe((id: string) => {
+        this.trainingsService.selectTraining(id);
+      });
   }
 
   ngOnDestroy() {

@@ -3,16 +3,19 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { SimpleDialogComponent } from 'src/app/shared/components/simple-dialog/simple-dialog.component';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, take } from 'rxjs/operators';
 import { TrainingsService } from '../../services/trainings.service';
 import { ITraining } from '../../interfaces/training.interface';
+import { Store, select } from '@ngrx/store';
+import { IFullTrainingState } from 'src/app/shared/interfaces/training-state.interface';
+import * as fromTrainings from '../../reducer';
 
 const finishedSpinnerValue = 100;
 
 @Component({
   selector: 'app-current-training',
   templateUrl: './current-training.component.html',
-  styleUrls: ['./current-training.component.scss']
+  styleUrls: ['./current-training.component.scss'],
 })
 export class CurrentTrainingComponent implements OnInit {
   public trainingProgress = 0;
@@ -24,17 +27,16 @@ export class CurrentTrainingComponent implements OnInit {
     private readonly dialog: MatDialog,
     private readonly router: Router,
     private readonly activatedRoute: ActivatedRoute,
-    private readonly trainingsService: TrainingsService
+    private readonly trainingsService: TrainingsService,
+    private readonly store: Store<IFullTrainingState>
   ) {}
 
   ngOnInit() {
-    this.trainingsService.selectedExercise$
-      .pipe(takeUntil(this.unsubscribe))
+    this.store
+      .pipe(select(fromTrainings.getSelectedTraining), take(1))
       .subscribe((training: ITraining) => {
-        if (training) {
-          this.training = training;
-          this.startOrResumeTimer();
-        }
+        this.training = training;
+        this.startOrResumeTimer();
       });
   }
 
@@ -54,8 +56,8 @@ export class CurrentTrainingComponent implements OnInit {
     > = this.dialog.open(SimpleDialogComponent, {
       data: {
         title: 'Are you sure you want to finish your training?',
-        info: `Your progress is ${this.trainingProgress} %`
-      }
+        info: `Your progress is ${this.trainingProgress} %`,
+      },
     });
 
     disalogRef
@@ -64,7 +66,7 @@ export class CurrentTrainingComponent implements OnInit {
       .subscribe((result: boolean) => {
         if (result) {
           this.trainingsService.cancelTraining();
-          this.router.navigate(['../new'], {relativeTo: this.activatedRoute});
+          this.router.navigate(['../new'], { relativeTo: this.activatedRoute });
         } else {
           this.startOrResumeTimer();
         }
@@ -78,7 +80,7 @@ export class CurrentTrainingComponent implements OnInit {
     this.timer = <any>setInterval(() => {
       this.trainingProgress < finishedSpinnerValue
         ? (this.trainingProgress += 10)
-        : this.compeleteTraining()
+        : this.compeleteTraining();
     }, 1000);
   }
 
@@ -88,6 +90,6 @@ export class CurrentTrainingComponent implements OnInit {
   private compeleteTraining(): void {
     clearInterval(this.timer);
     this.trainingsService.completeTraining();
-    this.router.navigate(['../new'], {relativeTo: this.activatedRoute});
+    this.router.navigate(['../new'], { relativeTo: this.activatedRoute });
   }
 }

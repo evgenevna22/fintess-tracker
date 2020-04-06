@@ -7,6 +7,7 @@ import {
   STOP_TRAINING,
 } from './actions';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
+import { ITraining } from './interfaces/training.interface';
 
 export const initialState: ITrainingsState = {
   avaliableTrainings: null,
@@ -32,7 +33,11 @@ export function reducer(
     case START_TRAINING:
       return {
         ...state,
-        selectedTraining: action.payload,
+        selectedTraining: {
+          ...state.avaliableTrainings.find(
+            (training: ITraining) => training.id === action.payload
+          ),
+        },
       };
     case STOP_TRAINING:
       return {

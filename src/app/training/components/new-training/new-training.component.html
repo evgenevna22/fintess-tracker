@@ -10,7 +10,7 @@
       <mat-form-field *ngIf="!(isLoading$ | async)">
         <mat-select [formControl]="selectedTraining"
                     placeholder="Select your training">
-          <mat-option *ngFor="let training of trainings"
+          <mat-option *ngFor="let training of trainings$ | async"
                       [value]="training.id">
             {{ training.name }}
           </mat-option>
@@ -21,7 +21,7 @@
     </mat-card-content>
     <mat-card-actions fxLayoutAlign="center center">
       <button mat-raised-button
-              *ngIf="trainings else templateForEmptyAvaliableExs"
+              *ngIf="trainings$ | async else templateForEmptyAvaliableExs"
               color="primary"
               (click)="createNewTraining()">
         Start!
